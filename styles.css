@@ -1,16 +1,19 @@
 :root {
-  --bg: #0b1220;
-  --surface: #111827;
-  --panel: #1f2937;
-  --panel-soft: #0f172a;
-  --primary: #22c55e;
-  --primary-dark: #15803d;
-  --accent: #38bdf8;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --shadow: rgba(15, 23, 42, 0.35);
+  --bg: #061426;
+  --bg-2: #0d1f36;
+  --surface: rgba(12, 24, 42, 0.75);
+  --panel: rgba(18, 41, 68, 0.92);
+  --panel-strong: #102948;
+  --primary: #60a5fa;
+  --primary-dark: #2563eb;
+  --primary-soft: rgba(96, 165, 250, 0.18);
+  --accent: #7dd3fc;
+  --text: #ebf4ff;
+  --muted: #bfd4ef;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --success: #34d399;
+  --shadow: rgba(9, 20, 37, 0.44);
 }
 
 * {
@@ -25,7 +28,9 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(180deg, #0b1220 0%, #101a2b 100%);
+  background:
+    radial-gradient(circle at top left, rgba(96, 165, 250, 0.22), transparent 26%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   color: var(--text);
 }
 
@@ -35,7 +40,7 @@ input {
 }
 
 .app-shell {
-  width: min(1100px, calc(100% - 24px));
+  width: min(1180px, calc(100% - 24px));
   margin: 0 auto;
   padding: 24px 0 40px;
 }
@@ -45,12 +50,31 @@ input {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #dbeafe, #60a5fa 45%, #1d4ed8);
+  color: #081a31;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  box-shadow: 0 12px 28px rgba(96, 165, 250, 0.35);
 }
 
 .eyebrow {
   margin: 0 0 6px;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
@@ -63,7 +87,58 @@ p {
 }
 
 h1 {
-  font-size: clamp(1.8rem, 2vw + 1rem, 2.7rem);
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.9rem);
+  letter-spacing: -0.04em;
+}
+
+.hero-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(125, 211, 252, 0.08));
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  border-radius: 18px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 18px 40px var(--shadow);
+}
+
+.badge {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(125, 211, 252, 0.12);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-banner h2 {
+  margin-top: 8px;
+  font-size: clamp(1.2rem, 1vw + 1rem, 1.8rem);
+}
+
+.banner-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.85);
 }
 
 .dashboard {
@@ -73,9 +148,9 @@ h1 {
 }
 
 .panel {
-  background: rgba(17, 24, 39, 0.82);
+  background: linear-gradient(180deg, rgba(17, 32, 54, 0.92), rgba(13, 27, 46, 0.9));
   border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 20px;
   box-shadow: 0 18px 40px var(--shadow);
 }
@@ -111,9 +186,9 @@ label {
 
 input {
   width: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 1px solid rgba(125, 211, 252, 0.2);
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(7, 18, 30, 0.9);
   color: var(--text);
   padding: 12px 14px;
 }
@@ -143,9 +218,9 @@ input {
 
 .outline-btn {
   border-radius: 10px;
-  background: transparent;
+  background: rgba(12, 24, 42, 0.7);
   color: var(--text);
-  border: 1px solid rgba(148, 163, 184, 0.38);
+  border: 1px solid rgba(125, 211, 252, 0.25);
   padding: 10px 14px;
 }
 
@@ -167,7 +242,7 @@ input {
 }
 
 .versus {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--accent);
 }
 
@@ -178,15 +253,15 @@ input {
 }
 
 .score-card {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(7, 18, 30, 0.8);
+  border: 1px solid rgba(125, 211, 252, 0.15);
   border-radius: 18px;
   padding: 18px 14px;
   text-align: center;
 }
 
 .runs-card {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(14, 116, 144, 0.25));
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.18), rgba(37, 99, 235, 0.26));
 }
 
 .card-label {
@@ -212,8 +287,8 @@ input {
 .summary-box {
   border-radius: 12px;
   padding: 14px 12px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(8, 20, 34, 0.82);
+  border: 1px solid rgba(125, 211, 252, 0.12);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -237,19 +312,19 @@ input {
   font-weight: 700;
   font-size: 1.05rem;
   color: white;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 }
 
 .wide-btn {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
 }
 
 .no-ball-btn {
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
 }
 
 .wicket-btn {
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  background: linear-gradient(135deg, #f87171, #ef4444);
 }
 
 .utility-row {
@@ -270,8 +345,8 @@ input {
 }
 
 .ball-log li {
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(12, 24, 42, 0.9);
+  border: 1px solid rgba(125, 211, 252, 0.1);
   border-radius: 999px;
   padding: 8px 12px;
   font-weight: 700;
@@ -308,13 +383,18 @@ input {
 
   .topbar,
   .teams-row,
-  .summary-row {
+  .summary-row,
+  .hero-banner {
     display: grid;
     gap: 12px;
   }
 
   .topbar {
     grid-template-columns: 1fr;
+  }
+
+  .hero-banner {
+    padding: 16px 18px;
   }
 
   .button-grid {
