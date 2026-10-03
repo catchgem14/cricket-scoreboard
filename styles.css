@@ -650,3 +650,5 @@ body.mn-body[data-view="home"] .mn-format-big { background-image: linear-gradien
 body.mn-body[data-view="home"] .mn-format-bar { background: #164c55; }
 body.mn-body[data-view="home"] .mn-steps li span { color: #062b34; background: linear-gradient(135deg, #8af0f0, #00b9c7); }
 body.mn-body[data-view="home"] .mn-cta-band { background: linear-gradient(120deg, #0a414b, #087482 72%, #0b929e); }
+body.mn-body[data-view="home"] .mn-demo { background: linear-gradient(155deg, #12515c, #0e6872); border-color: rgba(104, 230, 231, .55); box-shadow: 0 30px 70px rgba(2, 30, 38, .48), 0 0 32px rgba(0, 185, 199, .12); }
+body.mn-body[data-view="home"] .mn-demo:hover { background: linear-gradient(155deg, #155e69, #107581); }
