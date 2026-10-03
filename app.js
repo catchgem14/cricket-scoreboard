@@ -685,6 +685,10 @@ function updateDismissalFields() {
   refs.dismissalFields.hidden = !refs.detailWicket.value;
 }
 
+if ('serviceWorker' in navigator && /^https?:$/.test(window.location.protocol)) {
+  navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+}
+
 function bindEvents() {
   refs.setupForm.addEventListener('submit', startMatch);
   refs.formatInput.addEventListener('change', onFormatChange);
@@ -718,7 +722,3 @@ function bindEvents() {
 bindEvents();
 onFormatChange();
 render();
-
-if ('serviceWorker' in navigator && /^https?:$/.test(window.location.protocol)) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
-}

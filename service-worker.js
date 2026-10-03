@@ -2,12 +2,12 @@ const CACHE_NAME = 'cricnova-v4';
 const APP_FILES = [
   './',
   './index.html',
-  './styles.css',
-  './app.js',
-  './manifest.webmanifest',
-  './app-icon.svg',
-  './icon-192.png',
-  './icon-512.png',
+  './styles.css?v=cricnova4',
+  './app.js?v=cricnova4',
+  './manifest.webmanifest?v=cricnova4',
+  './app-icon.svg?v=cricnova4',
+  './icon-192.png?v=cricnova4',
+  './icon-512.png?v=cricnova4',
 ];
 
 self.addEventListener('install', (event) => {
