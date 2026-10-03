@@ -1,306 +1,564 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#07323c" />
-    <meta name="description" content="CricNova is a multi-format cricket scoring desk for Test, ODI and T20 matches." />
-    <link rel="manifest" href="manifest.webmanifest?v=cricnova7" />
-    <link rel="icon" href="app-icon.svg?v=cricnova7" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=cricnova7" />
-    <title>CricNova | International Score Centre</title>
+    <meta name="description" content="Maiden by SportsCo is a cricket scoring desk for Test, ODI and T20 with tournaments, World Cup mode, named scorers and a stats corner. No sign-in needed." />
+    <link rel="manifest" href="manifest.webmanifest?v=maiden2" />
+    <link rel="icon" href="app-icon.svg?v=maiden2" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon-192.png?v=maiden2" />
+    <link rel="preload" href="fonts/mona-sans-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="styles.css?v=maiden2" />
+    <title>Maiden by SportsCo | Cricket scoring for every format</title>
   </head>
-  <body class="cn-body">
-    <div id="portalApp" class="cn-portal">
-      <header class="cn-portal-topbar">
-        <a class="cn-brand" href="./" aria-label="CricNova home">
-          <span class="cn-brand-mark">CN</span>
-          <span><strong>CricNova</strong><small>TOURNAMENT SCORE CENTRE</small></span>
+  <body class="mn-body" data-view="home">
+    <a class="mn-skip" href="#main">Skip to content</a>
+
+    <header class="mn-ribbon" id="ribbon">
+      <div class="mn-ribbon-inner">
+        <a class="mn-brand" href="#/" aria-label="Maiden by SportsCo, home">
+          <svg class="mn-logo" viewBox="0 0 512 512" aria-hidden="true" focusable="false">
+            <defs>
+              <radialGradient id="lgGlow" cx="32%" cy="82%" r="80%"><stop offset="0" stop-color="#38d7dc" stop-opacity=".55" /><stop offset="1" stop-color="#38d7dc" stop-opacity="0" /></radialGradient>
+              <linearGradient id="lgBlade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b6f6f4" /><stop offset=".55" stop-color="#45d6da" /><stop offset="1" stop-color="#0aa7b6" /></linearGradient>
+              <radialGradient id="lgBall" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#ffffff" /><stop offset="1" stop-color="#c9f3f3" /></radialGradient>
+              <clipPath id="lgClip"><circle cx="330" cy="330" r="58" /></clipPath>
+            </defs>
+            <rect width="512" height="512" rx="112" fill="#0b4350" />
+            <rect width="512" height="512" rx="112" fill="url(#lgGlow)" />
+            <rect x="6" y="6" width="500" height="500" rx="106" fill="none" stroke="#38d7dc" stroke-opacity=".5" stroke-width="10" />
+            <g class="mn-logo-bat">
+              <g transform="translate(236 244) rotate(40)">
+                <rect x="-13" y="-190" width="26" height="130" rx="9" fill="#e9fbfb" />
+                <path d="M-13 -66C-13 -52 -38 -48 -38 -26V148Q-38 166 -20 166H20Q38 166 38 148V-26C38 -48 13 -52 13 -66Z" fill="url(#lgBlade)" />
+                <path d="M0 -28V140" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round" />
+                <g stroke="#0b4a56" stroke-width="6" stroke-linecap="round"><path d="M-9 -172H9" /><path d="M-9 -154H9" /><path d="M-9 -136H9" /><path d="M-9 -118H9" /></g>
+              </g>
+            </g>
+            <g class="mn-logo-ball">
+              <circle cx="330" cy="330" r="62" fill="url(#lgBall)" stroke="#0b4350" stroke-width="8" />
+              <g clip-path="url(#lgClip)" fill="none" stroke="#00b9c7" stroke-linecap="round">
+                <path d="M298 282Q356 330 298 378" stroke-width="8" />
+                <path d="M289 282Q347 330 289 378" stroke-width="4" stroke-dasharray="3 9" />
+                <path d="M307 282Q365 330 307 378" stroke-width="4" stroke-dasharray="3 9" />
+              </g>
+            </g>
+          </svg>
+          <span class="mn-brand-text"><strong>Maiden</strong><small>by SportsCo</small></span>
         </a>
-        <div id="accountTools" class="cn-account-tools" hidden>
-          <span id="accountIdentity"></span>
-          <button id="signOutBtn" class="cn-button cn-button-muted" type="button">Sign out</button>
+        <nav class="mn-nav" aria-label="Main">
+          <a href="#/" data-nav="home">Home</a>
+          <a href="#/score" data-nav="score">Score</a>
+          <a href="#/matches" data-nav="matches">Matches<span id="liveCount" class="mn-nav-count" hidden>0</span></a>
+          <a href="#/tournaments" data-nav="tournaments">Tournaments</a>
+        </nav>
+        <div class="mn-ribbon-actions">
+          <button id="scorerChip" class="mn-scorer-chip" type="button" aria-haspopup="dialog" title="Scorer details">
+            <span id="scorerAvatar" class="mn-avatar">?</span>
+            <span class="mn-scorer-text"><small>SCORER</small><strong id="scorerName">Add your name</strong></span>
+          </button>
+          <a class="mn-button mn-button-primary mn-ribbon-cta" href="#/score/new">Start scoring</a>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <main class="cn-portal-main">
-        <section id="authPanel" class="cn-auth-layout">
-          <div class="cn-auth-copy">
-            <p class="cn-kicker">MULTI-SCORER WORKSPACE</p>
-            <h1>Every match,<br />on the same page.</h1>
-            <p>Sign in to manage tournaments, assign scorers, and follow live scorecards from anywhere.</p>
-            <div class="cn-auth-capabilities"><span>TOURNAMENTS</span><span>SCORER ROLES</span><span>LIVE MATCHES</span></div>
+    <main id="main">
+      <!-- ================= HOME ================= -->
+      <section class="mn-view mn-home" data-view="home" aria-label="Home">
+        <div class="mn-hero">
+          <div class="mn-hero-bg" aria-hidden="true">
+            <span class="mn-blob mn-blob-a"></span><span class="mn-blob mn-blob-b"></span><span class="mn-blob mn-blob-c"></span>
+            <svg class="mn-hero-field" viewBox="0 0 1200 700" preserveAspectRatio="xMaxYMid slice">
+              <g fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="2">
+                <ellipse cx="820" cy="350" rx="520" ry="320" />
+                <ellipse cx="820" cy="350" rx="330" ry="200" stroke-dasharray="6 10" />
+                <rect x="772" y="236" width="96" height="228" rx="6" transform="rotate(18 820 350)" />
+                <path d="M752 300h136M752 400h136" transform="rotate(18 820 350)" />
+              </g>
+              <path class="mn-hero-path" d="M80 620C300 380 520 240 790 330" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-dasharray="4 12" stroke-linecap="round" />
+              <circle class="mn-hero-ball" r="11" fill="#fff"><animateMotion dur="4.8s" repeatCount="indefinite" path="M80 620C300 380 520 240 790 330" /></circle>
+            </svg>
           </div>
-          <section class="cn-panel cn-auth-panel">
-            <p class="cn-kicker">SCORER ACCESS</p>
-            <h2>Sign in to CricNova</h2>
-            <form id="authForm" class="cn-form">
-              <label>Email address<input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
-              <button id="authSubmit" class="cn-button cn-button-primary" type="submit">Email me a sign-in link</button>
-            </form>
-            <p id="authMessage" class="cn-action-message" aria-live="polite"></p>
-            <div id="cloudSetupNotice" class="cn-cloud-setup" hidden>
-              <strong>Cloud scoring needs a Supabase project.</strong>
-              <p>Add its project URL and public publishable key to <code>supabase-config.js</code>, then apply <code>supabase/schema.sql</code> in the Supabase SQL Editor.</p>
-              <button id="localDemoBtn" class="cn-text-button" type="button">Open this device’s local scorer</button>
+          <div class="mn-container mn-hero-grid">
+            <div class="mn-hero-copy">
+              <p class="mn-pill"><span class="mn-pulse"></span> Test &middot; ODI &middot; T20</p>
+              <h1>Score every ball<br />like it&rsquo;s a <span class="mn-grad-text">final.</span></h1>
+              <p class="mn-lead">Maiden by SportsCo is the match-day scoring desk for Test, ODI and T20. Run tournaments, name your scorers and read every game through a built-in stats corner.</p>
+              <div class="mn-hero-actions">
+                <a class="mn-button mn-button-dark mn-button-lg" href="#/score/new">Start scoring <span class="mn-arrow" aria-hidden="true">&rarr;</span></a>
+                <a class="mn-button mn-button-glass mn-button-lg" href="#/tournaments">Open tournaments</a>
+              </div>
+              <ul class="mn-trust">
+                <li><b>3</b><span>ICC formats</span></li>
+                <li><b>0</b><span>sign-ups needed</span></li>
+                <li><b>100%</b><span>works offline</span></li>
+              </ul>
             </div>
-          </section>
-        </section>
 
-        <section id="dashboardPanel" class="cn-dashboard" hidden>
-          <div class="cn-dashboard-heading">
-            <div><p class="cn-kicker">SCORER WORKSPACE</p><h1>Your tournaments</h1></div>
-            <p id="dashboardMessage" class="cn-action-message" aria-live="polite"></p>
-          </div>
-          <div class="cn-dashboard-grid">
-            <aside class="cn-dashboard-sidebar">
-              <section class="cn-panel">
-                <div class="cn-panel-heading"><div><p class="cn-kicker">WORKSPACE</p><h2>Tournaments</h2></div><span id="tournamentCount" class="cn-table-note">0</span></div>
-                <ul id="tournamentList" class="cn-tournament-list"><li class="cn-empty-cell">Create a tournament or join with an invite code.</li></ul>
-              </section>
-              <section id="tournamentAccessPanel" class="cn-panel">
-                <div class="cn-panel-heading"><div><p class="cn-kicker">ACCESS</p><h2>Create or join</h2></div></div>
-                <form id="newTournamentForm" class="cn-form">
-                  <label>Tournament name<input id="tournamentName" type="text" maxlength="100" placeholder="Coastal Premier League" required /></label>
-                  <div class="cn-form-pair"><label>Season<input id="tournamentSeason" type="text" maxlength="24" placeholder="2026" /></label><label>Host / organizer<input id="tournamentHost" type="text" maxlength="80" placeholder="Club or board" /></label></div>
-                  <label>Primary venue<input id="tournamentVenue" type="text" maxlength="100" placeholder="Ground name" /></label>
-                  <div class="cn-form-pair"><label>City<input id="tournamentCity" type="text" maxlength="80" /></label><label>Country<input id="tournamentCountry" type="text" maxlength="80" /></label></div>
-                  <div class="cn-form-pair"><label>Starts<input id="tournamentStart" type="date" /></label><label>Ends<input id="tournamentEnd" type="date" /></label></div>
-                  <button class="cn-button cn-button-primary" type="submit">Create tournament</button>
-                </form>
-                <div class="cn-join-divider"><span>OR JOIN</span></div>
-                <form id="joinTournamentForm" class="cn-form">
-                  <label>Invite code<input id="tournamentInviteInput" type="text" maxlength="16" placeholder="ENTER CODE" autocomplete="off" required /></label>
-                  <button class="cn-button cn-button-muted" type="submit">Join tournament</button>
-                </form>
-              </section>
-            </aside>
-
-            <div class="cn-dashboard-main">
-              <section id="tournamentOverview" class="cn-panel cn-tournament-overview" hidden>
-                <div class="cn-panel-heading"><div><p id="selectedTournamentMeta" class="cn-kicker">TOURNAMENT</p><h2 id="selectedTournamentTitle">Select a tournament</h2></div><span id="selectedTournamentRole" class="cn-role-badge"></span></div>
-                <div id="selectedTournamentDetails" class="cn-tournament-facts"></div>
-                <div id="inviteCodeRow" class="cn-invite-row" hidden><span>SCORER INVITE CODE</span><strong id="inviteCodeValue"></strong><button id="copyInviteBtn" class="cn-text-button" type="button">Copy code</button></div>
-              </section>
-
-              <section id="newMatchPanel" class="cn-panel" hidden>
-                <div class="cn-panel-heading"><div><p class="cn-kicker">TOURNAMENT FIXTURE</p><h2>Schedule a match</h2></div></div>
-                <form id="newMatchForm" class="cn-form cn-match-form">
-                  <div class="cn-form-pair"><label>Team A<input id="newMatchTeamA" type="text" maxlength="80" required /></label><label>Team B<input id="newMatchTeamB" type="text" maxlength="80" required /></label></div>
-                  <div class="cn-form-pair"><label>Format<select id="newMatchFormat"><option value="t20">T20 International</option><option value="odi">One Day International</option><option value="test">Test</option></select></label><label id="newMatchOversField">Overs<input id="newMatchOvers" type="number" min="1" max="50" value="20" /></label></div>
-                  <div class="cn-form-pair"><label>Venue<input id="newMatchVenue" type="text" maxlength="100" /></label><label>Scheduled start<input id="newMatchTime" type="datetime-local" /></label></div>
-                  <div class="cn-form-pair"><label>Toss won by<select id="newMatchToss"><option value="0">Team A</option><option value="1">Team B</option></select></label><label>Decision<select id="newMatchDecision"><option value="bat">Bat</option><option value="field">Field</option></select></label></div>
-                  <div class="cn-form-pair"><label>Opening striker<input id="newMatchStriker" type="text" maxlength="28" value="Batter 1" /></label><label>Non-striker<input id="newMatchNonStriker" type="text" maxlength="28" value="Batter 2" /></label></div>
-                  <div class="cn-form-pair"><label>Opening bowler<input id="newMatchBowler" type="text" maxlength="28" value="Bowler 1" /></label><label>Assigned scorer<select id="newMatchScorer" required></select></label></div>
-                  <button class="cn-button cn-button-primary" type="submit">Create match</button>
-                </form>
-              </section>
-
-              <section id="matchesPanel" class="cn-panel" hidden>
-                <div class="cn-panel-heading"><div><p class="cn-kicker">FIXTURES</p><h2>Matches</h2></div><span id="matchCount" class="cn-table-note">0 matches</span></div>
-                <div id="matchList" class="cn-match-list"><p class="cn-empty-cell">No matches scheduled yet.</p></div>
-              </section>
-
-              <section id="membersPanel" class="cn-panel" hidden>
-                <div class="cn-panel-heading"><div><p class="cn-kicker">TOURNAMENT ACCESS</p><h2>Scorers and viewers</h2></div></div>
-                <div id="memberList" class="cn-member-list"></div>
-              </section>
+            <div class="mn-hero-demo">
+              <div id="demoCard" class="mn-demo mn-spot" aria-label="Animated sample scoreboard">
+                <div class="mn-demo-top">
+                  <span class="mn-format-badge">T20I</span>
+                  <span class="mn-demo-tag">SAMPLE MATCH</span>
+                  <span class="mn-live"><i></i> LIVE</span>
+                </div>
+                <div class="mn-demo-teams">
+                  <div><small>CHASING</small><strong>Cyan Kings</strong></div>
+                  <span>v</span>
+                  <div><small>DEFENDING</small><strong>Coral Rockets</strong></div>
+                </div>
+                <div class="mn-demo-score">
+                  <div class="mn-demo-total"><b id="demoRuns">0</b><span>/<b id="demoWkts">0</b></span></div>
+                  <div><strong id="demoOvers">0.0</strong><small>OVERS</small></div>
+                  <div><strong id="demoRate">0.00</strong><small>RUN RATE</small></div>
+                  <div><strong id="demoNeed">&mdash;</strong><small>TO WIN</small></div>
+                </div>
+                <div id="demoOver" class="mn-demo-over" aria-hidden="true"></div>
+                <svg class="mn-demo-chart" viewBox="0 0 320 110" aria-hidden="true">
+                  <g stroke="#fff" stroke-opacity=".12"><path d="M0 28h320M0 55h320M0 82h320" /></g>
+                  <path id="demoTargetLine" fill="none" stroke="#f2a900" stroke-width="2" stroke-dasharray="4 5" d="" />
+                  <path id="demoWormArea" fill="url(#demoFade)" d="" />
+                  <path id="demoWorm" fill="none" stroke="#45d6da" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="" />
+                  <defs><linearGradient id="demoFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45d6da" stop-opacity=".35" /><stop offset="1" stop-color="#45d6da" stop-opacity="0" /></linearGradient></defs>
+                </svg>
+                <div id="demoBurst" class="mn-demo-burst" aria-hidden="true"></div>
+              </div>
+              <span class="mn-float mn-float-a" aria-hidden="true">Maiden over</span>
+              <span class="mn-float mn-float-b" aria-hidden="true">Free hit</span>
             </div>
           </div>
-        </section>
-      </main>
-      <footer class="cn-footer"><span>CRICNOVA</span><span>One active scorer per match · live scorecards for everyone on the tournament</span></footer>
-    </div>
-
-    <div id="scorerApp" class="cn-shell" hidden>
-      <header class="cn-topbar">
-        <a class="cn-brand" href="./" aria-label="CricNova home">
-          <span class="cn-brand-mark">CN</span>
-          <span><strong>CricNova</strong><small>INTERNATIONAL SCORE CENTRE</small></span>
-        </a>
-        <div class="cn-top-actions">
-          <button id="backToPortalBtn" class="cn-button cn-button-muted" type="button">Back to matches</button>
-          <span class="cn-offline"><i></i><span id="connectionStatus">Ready to score</span></span>
-          <button id="newMatchBtn" class="cn-button cn-button-muted" type="button">New match</button>
         </div>
-      </header>
 
-      <main>
-        <section class="cn-page-heading">
-          <div>
-            <p class="cn-kicker">CRICKET, SCORED CLEARLY</p>
-            <h1>Match centre</h1>
+        <div class="mn-container">
+          <a id="resumeStrip" class="mn-resume mn-spot" href="#/score" hidden>
+            <span class="mn-live"><i></i> <span id="resumeStatus">LIVE</span></span>
+            <span class="mn-resume-copy"><strong id="resumeTitle">Pick up where you left off</strong><small id="resumeMeta"></small></span>
+            <span class="mn-resume-go">Resume scoring <i aria-hidden="true">&rarr;</i></span>
+          </a>
+        </div>
+
+        <div class="mn-ticker" aria-hidden="true">
+          <div class="mn-ticker-track">
+            <span>TEST</span><span>ODI</span><span>T20I</span><span>SUPER OVER</span><span>FREE HIT</span><span>MAIDEN OVER</span><span>STATS CORNER</span><span>LIVE SCORECARD</span>
+            <span>TEST</span><span>ODI</span><span>T20I</span><span>SUPER OVER</span><span>FREE HIT</span><span>MAIDEN OVER</span><span>STATS CORNER</span><span>LIVE SCORECARD</span>
           </div>
-          <p class="cn-rules-note">ICC playing conditions profile <span>2019–20</span></p>
+        </div>
+
+        <section class="mn-section mn-container mn-reveal" id="features" aria-labelledby="featuresTitle">
+          <div class="mn-section-head">
+            <p class="mn-kicker">EVERYTHING ON ONE DESK</p>
+            <h2 id="featuresTitle">Built for the way cricket is actually run</h2>
+          </div>
+          <div class="mn-feature-grid">
+            <a class="mn-feature mn-spot" href="#/tournaments" style="--accent:#00b9c7">
+              <div class="mn-viz mn-viz-bracket">
+                <svg viewBox="0 0 160 90" aria-hidden="true">
+                  <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path pathLength="1" style="--d:0" d="M8 12H34V34H8" /><path pathLength="1" style="--d:1" d="M8 56H34V78H8" />
+                    <path pathLength="1" style="--d:2" d="M34 23H62M34 67H62" /><path pathLength="1" style="--d:3" d="M62 23V67M62 45H104" />
+                  </g>
+                  <circle class="mn-viz-node" cx="112" cy="45" r="7" />
+                </svg>
+              </div>
+              <h3>Tournaments</h3>
+              <p>Leagues, knockouts and full World Cup formats. Fixtures, the points table and net run rate update themselves.</p>
+              <span class="mn-feature-link">Open tournaments <i aria-hidden="true">&rarr;</i></span>
+            </a>
+            <a class="mn-feature mn-spot" href="#/tournaments" style="--accent:#2fc4b2">
+              <div class="mn-viz mn-viz-desk">
+                <span class="mn-av" style="--i:0">AK</span><span class="mn-av" style="--i:1">RS</span><span class="mn-av" style="--i:2">JM</span>
+                <span class="mn-tag">Match 12 &middot; assigned</span>
+              </div>
+              <h3>Scorer desk</h3>
+              <p>Name the scorer for every fixture and keep each scorecard accountable, from the first ball to the result.</p>
+              <span class="mn-feature-link">Assign scorers <i aria-hidden="true">&rarr;</i></span>
+            </a>
+            <a class="mn-feature mn-spot" href="#/matches" style="--accent:#3aa9e8">
+              <div class="mn-viz mn-viz-live">
+                <span class="mn-live"><i></i> LIVE</span>
+                <div class="mn-mini-score"><b>128</b>/3 <small>14.2 ov</small></div>
+                <div class="mn-mini-balls"><span>1</span><span>4</span><span>&middot;</span><span class="is-w">W</span><span class="is-six">6</span><span>2</span></div>
+              </div>
+              <h3>Live matches</h3>
+              <p>Every innings and every over on one live board. Resume any match in a tap, even without a connection.</p>
+              <span class="mn-feature-link">See matches <i aria-hidden="true">&rarr;</i></span>
+            </a>
+            <a class="mn-feature mn-spot" href="#/score/new" style="--accent:#f2a900">
+              <div class="mn-viz mn-viz-stats">
+                <svg viewBox="0 0 160 70" aria-hidden="true">
+                  <g><rect style="--i:0" x="8" y="42" width="14" height="22" rx="3" /><rect style="--i:1" x="29" y="30" width="14" height="34" rx="3" /><rect style="--i:2" x="50" y="46" width="14" height="18" rx="3" /><rect style="--i:3" x="71" y="18" width="14" height="46" rx="3" /><rect style="--i:4" x="92" y="34" width="14" height="30" rx="3" /><rect style="--i:5" x="113" y="8" width="14" height="56" rx="3" /><rect style="--i:6" x="134" y="24" width="14" height="40" rx="3" /></g>
+                </svg>
+              </div>
+              <h3>Stats corner</h3>
+              <p>Worm charts, runs per over, partnerships and leaderboards for every match and every tournament.</p>
+              <span class="mn-feature-link">Start a match <i aria-hidden="true">&rarr;</i></span>
+            </a>
+          </div>
         </section>
 
-        <div class="cn-workspace">
-          <div class="cn-main-column">
-            <section class="cn-scoreboard" aria-label="Live match score">
-              <div class="cn-scoreboard-top">
-                <div>
-                  <span id="formatBadge" class="cn-format-badge">T20I</span>
-                  <p id="inningsLabel" class="cn-innings-label">Set up a match to begin</p>
-                </div>
-                <span id="matchStatus" class="cn-status"><i></i> SETUP</span>
-              </div>
-              <div class="cn-score-teams">
-                <div><span class="cn-team-caption">BATTING</span><h2 id="battingTeamName">Batting side</h2></div>
-                <span class="cn-versus">v</span>
-                <div class="cn-team-right"><span class="cn-team-caption">BOWLING</span><h2 id="bowlingTeamName">Fielding side</h2></div>
-              </div>
-              <div class="cn-scoreline">
-                <div class="cn-total"><strong id="runsValue">0</strong><span>/ <b id="wicketsValue">0</b></span></div>
-                <div class="cn-over-readout"><strong id="oversValue">0.0</strong><span>OVERS</span></div>
-                <div class="cn-rate-readout"><strong id="runRateValue">0.00</strong><span>RUN RATE</span></div>
-              </div>
-              <div class="cn-target-line" id="targetLine"><span id="targetLabel">FIRST INNINGS</span><strong id="targetValue">No target</strong><span id="requiredValue"></span></div>
-              <div class="cn-over-section">
-                <div class="cn-section-heading"><h3>Current over</h3><span id="overStatus">Waiting for first ball</span></div>
-                <div id="overBalls" class="cn-over-balls" aria-live="polite"><span class="cn-ball-empty">—</span></div>
-              </div>
-              <div id="resultBanner" class="cn-result" hidden></div>
-            </section>
+        
 
-            <section id="scoringPanel" class="cn-panel cn-scoring-panel" hidden>
-              <div class="cn-panel-heading">
-                <div><p class="cn-kicker">LIVE SCORING</p><h2>Record delivery</h2></div>
-                <button id="detailsBtn" class="cn-text-button" type="button">Detailed entry</button>
-              </div>
-              <div class="cn-scoring-group">
-                <span class="cn-control-label">BAT RUNS</span>
-                <div class="cn-run-buttons" aria-label="Add runs off the bat">
-                  <button class="cn-run-button" data-runs="0" type="button">0</button>
-                  <button class="cn-run-button" data-runs="1" type="button">1</button>
-                  <button class="cn-run-button" data-runs="2" type="button">2</button>
-                  <button class="cn-run-button" data-runs="3" type="button">3</button>
-                  <button class="cn-run-button cn-boundary" data-runs="4" type="button">4</button>
-                  <button class="cn-run-button cn-boundary" data-runs="6" type="button">6</button>
-                </div>
-              </div>
-              <div class="cn-scoring-group">
-                <span class="cn-control-label">EXTRAS & DISMISSAL</span>
-                <div class="cn-extra-buttons">
-                  <button class="cn-extra-button" data-extra="wide" type="button"><b>WD</b><span>Wide</span></button>
-                  <button class="cn-extra-button" data-extra="noBall" type="button"><b>NB</b><span>No ball</span></button>
-                  <button class="cn-extra-button" data-extra="bye" type="button"><b>B</b><span>Bye</span></button>
-                  <button class="cn-extra-button" data-extra="legBye" type="button"><b>LB</b><span>Leg bye</span></button>
-                  <button id="wicketBtn" class="cn-extra-button cn-wicket-button" type="button"><b>W</b><span>Wicket</span></button>
-                </div>
-              </div>
-              <div class="cn-score-actions">
-                <span id="freeHitNotice" class="cn-free-hit" hidden>FREE HIT</span>
-                <button id="undoBtn" class="cn-button cn-button-muted" type="button">Undo last delivery</button>
-              </div>
-              <p id="actionMessage" class="cn-action-message" aria-live="polite"></p>
-            </section>
-
-            <div class="cn-player-grid">
-              <section class="cn-panel">
-                <div class="cn-panel-heading"><div><p class="cn-kicker">BATTING CARD</p><h2>At the crease</h2></div><span id="battingExtras" class="cn-table-note">Extras 0</span></div>
-                <div class="cn-table-wrap">
-                  <table class="cn-table">
-                    <thead><tr><th>BATTER</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead>
-                    <tbody id="battingRows"><tr><td colspan="6" class="cn-empty-cell">Player figures appear when a match starts.</td></tr></tbody>
-                  </table>
-                </div>
-                <div class="cn-fall-wickets"><span>FALL OF WICKETS</span><p id="fallOfWickets">—</p></div>
-              </section>
-              <section class="cn-panel">
-                <div class="cn-panel-heading"><div><p class="cn-kicker">BOWLING CARD</p><h2>Bowling figures</h2></div><span id="bowlerQuota" class="cn-table-note">Limit —</span></div>
-                <div class="cn-table-wrap">
-                  <table class="cn-table cn-bowling-table">
-                    <thead><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECON</th></tr></thead>
-                    <tbody id="bowlingRows"><tr><td colspan="6" class="cn-empty-cell">Bowler figures appear when a match starts.</td></tr></tbody>
-                  </table>
-                </div>
-                <div class="cn-fall-wickets"><span>INNINGS EXTRAS</span><p id="extrasBreakdown">NB 0 · WD 0 · B 0 · LB 0</p></div>
-              </section>
-            </div>
-
-            <section class="cn-panel cn-commentary-panel">
-              <div class="cn-panel-heading"><div><p class="cn-kicker">DELIVERY LOG</p><h2>Commentary</h2></div><span id="deliveryCount" class="cn-table-note">0 deliveries</span></div>
-              <ol id="commentaryList" class="cn-commentary" aria-live="polite"><li class="cn-empty-cell">Ball-by-ball entries will appear here.</li></ol>
-            </section>
+        <section class="mn-section mn-container mn-reveal" aria-labelledby="formatsTitle">
+          <div class="mn-section-head">
+            <p class="mn-kicker">ICC FORMATS</p>
+            <h2 id="formatsTitle">One scorer, every format</h2>
           </div>
+          <div class="mn-format-grid">
+            <a class="mn-format-tile mn-spot" href="#/score/new"><span class="mn-format-big">T20I</span><strong>Twenty20</strong><p>20 overs a side, 4 per bowler, powerplay in overs 1&ndash;6, free hits and super overs.</p><i class="mn-format-bar" style="--w:40%"></i></a>
+            <a class="mn-format-tile mn-spot" href="#/score/new"><span class="mn-format-big">ODI</span><strong>One Day International</strong><p>50 overs a side, 10 per bowler, three powerplays, chases with live required rate.</p><i class="mn-format-bar" style="--w:75%"></i></a>
+            <a class="mn-format-tile mn-spot" href="#/score/new"><span class="mn-format-big">TEST</span><strong>Test cricket</strong><p>Four innings, declarations, follow-on at 200 runs ahead and draw handling.</p><i class="mn-format-bar" style="--w:100%"></i></a>
+          </div>
+        </section>
 
-          <aside class="cn-side-column">
-            <section id="setupPanel" class="cn-panel cn-setup-panel">
-              <div class="cn-panel-heading"><div><p class="cn-kicker">MATCH SETUP</p><h2>Start a match</h2></div></div>
-              <form id="setupForm" class="cn-form">
-                <label>Format
-                  <select id="formatInput">
-                    <option value="t20">T20 International · 20 overs</option>
-                    <option value="odi">One Day International · 50 overs</option>
-                    <option value="test">Test · up to 5 days</option>
-                  </select>
-                </label>
-                <div id="oversField"><label>Innings overs<input id="oversInput" type="number" min="1" max="50" value="20" /></label></div>
-                <label>Team A<input id="teamAInput" type="text" maxlength="28" value="Team A" required /></label>
-                <label>Team B<input id="teamBInput" type="text" maxlength="28" value="Team B" required /></label>
-                <div class="cn-form-pair">
-                  <label>Toss won by<select id="tossWinnerInput"><option value="0">Team A</option><option value="1">Team B</option></select></label>
-                  <label>Decision<select id="tossDecisionInput"><option value="bat">Bat</option><option value="field">Field</option></select></label>
-                </div>
-                <div class="cn-form-pair">
-                  <label>Opening striker<input id="openerInput" type="text" maxlength="28" value="Batter 1" /></label>
-                  <label>Non-striker<input id="nonStrikerInput" type="text" maxlength="28" value="Batter 2" /></label>
-                </div>
-                <label>Opening bowler<input id="bowlerInput" type="text" maxlength="28" value="Bowler 1" /></label>
-                <button class="cn-button cn-button-primary" type="submit">Start match <span aria-hidden="true">→</span></button>
+        <section class="mn-section mn-container mn-reveal" aria-labelledby="stepsTitle">
+          <div class="mn-section-head">
+            <p class="mn-kicker">HOW IT WORKS</p>
+            <h2 id="stepsTitle">From toss to trophy in three steps</h2>
+          </div>
+          <ol class="mn-steps">
+            <li><span>1</span><strong>Set up</strong><p>Choose the format, name the teams and the scorer, and record the toss.</p></li>
+            <li><span>2</span><strong>Score ball by ball</strong><p>Tap runs, extras and wickets. Undo any delivery. Everything saves as you go.</p></li>
+            <li><span>3</span><strong>Read the story</strong><p>Open the stats corner for charts, partnerships, standings and leaders.</p></li>
+          </ol>
+        </section>
+
+        <section class="mn-container mn-reveal">
+          <div class="mn-cta-band mn-spot">
+            <div><p class="mn-kicker mn-kicker-light">READY WHEN YOU ARE</p><h2>Ready for the first ball?</h2></div>
+            <a class="mn-button mn-button-dark mn-button-lg" href="#/score/new">Start scoring <span class="mn-arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================= SCORE ================= -->
+      <section class="mn-view" data-view="score" aria-label="Scoring" hidden>
+        <div class="mn-shell">
+          <div id="setupView">
+            <div class="mn-page-heading">
+              <div>
+                <p class="mn-kicker">NEW MATCH</p>
+                <h1>Start scoring</h1>
+                <p class="mn-subtitle">No sign-in needed. Matches are saved on this device as you score.</p>
+              </div>
+              <p class="mn-rules-note">ICC playing conditions profile <span>2019&ndash;20</span></p>
+            </div>
+            <div id="fixtureNote" class="mn-fixture-note" hidden></div>
+            <div class="mn-setup-layout">
+              <form id="setupForm" class="mn-panel mn-setup-form" autocomplete="off">
+                <fieldset class="mn-step">
+                  <legend><span class="mn-step-no">1</span> Format</legend>
+                  <div class="mn-format-cards">
+                    <label class="mn-format-card"><input type="radio" name="format" value="t20" checked /><span><b>T20I</b><small>20 overs &middot; 4 per bowler</small></span></label>
+                    <label class="mn-format-card"><input type="radio" name="format" value="odi" /><span><b>ODI</b><small>50 overs &middot; 10 per bowler</small></span></label>
+                    <label class="mn-format-card"><input type="radio" name="format" value="test" /><span><b>Test</b><small>Up to 5 days &middot; 4 innings</small></span></label>
+                  </div>
+                  <div id="oversField" class="mn-overs-field"><label>Overs per innings<input id="oversInput" type="number" min="1" max="20" value="20" inputmode="numeric" /></label><small id="oversHint">Shorten it for a quick match, up to 20 overs.</small></div>
+                </fieldset>
+                <fieldset class="mn-step">
+                  <legend><span class="mn-step-no">2</span> Teams &amp; toss</legend>
+                  <div class="mn-form-pair"><label>Team A<input id="teamAInput" type="text" maxlength="28" value="Team A" required /></label><label>Team B<input id="teamBInput" type="text" maxlength="28" value="Team B" required /></label></div>
+                  <div class="mn-form-pair"><label>Toss won by<select id="tossWinnerInput"><option value="0">Team A</option><option value="1">Team B</option></select></label><label>Decision<select id="tossDecisionInput"><option value="bat">Bat first</option><option value="field">Field first</option></select></label></div>
+                </fieldset>
+                <fieldset class="mn-step">
+                  <legend><span class="mn-step-no">3</span> Players &amp; scorer</legend>
+                  <div class="mn-form-pair"><label>Opening striker<input id="openerInput" type="text" maxlength="28" value="Batter 1" /></label><label>Non-striker<input id="nonStrikerInput" type="text" maxlength="28" value="Batter 2" /></label></div>
+                  <label>Opening bowler<input id="bowlerInput" type="text" maxlength="28" value="Bowler 1" /></label>
+                  <div class="mn-form-pair"><label>Scorer name<input id="scorerInput" type="text" maxlength="40" placeholder="Who is scoring?" autocomplete="name" required /></label><label>Venue <span class="mn-optional">optional</span><input id="venueInput" type="text" maxlength="60" placeholder="Ground name" /></label></div>
+                </fieldset>
+                <button class="mn-button mn-button-primary mn-button-lg mn-full" type="submit">Start match <span class="mn-arrow" aria-hidden="true">&rarr;</span></button>
               </form>
-            </section>
+              <aside class="mn-panel mn-preview" aria-live="polite" aria-label="Match preview">
+                <p class="mn-kicker">MATCH PREVIEW</p>
+                <div class="mn-preview-card">
+                  <span id="previewFormat" class="mn-format-badge">T20I</span>
+                  <div class="mn-preview-teams"><strong id="previewTeamA">Team A</strong><em>v</em><strong id="previewTeamB">Team B</strong></div>
+                  <p id="previewToss">Team A wins the toss and bats first.</p>
+                  <dl>
+                    <div><dt>Format</dt><dd id="previewRules">20 overs</dd></div>
+                    <div><dt>Scorer</dt><dd id="previewScorer">Add a name</dd></div>
+                    <div><dt>Venue</dt><dd id="previewVenue">Not set</dd></div>
+                  </dl>
+                </div>
+                <p class="mn-preview-note">Tip: after the first ball, the Stats corner tab opens charts and leaderboards for this match.</p>
+              </aside>
+            </div>
+          </div>
 
-            <section id="inPlayPanel" class="cn-panel cn-inplay-panel" hidden>
-              <div class="cn-panel-heading"><div><p class="cn-kicker">IN PLAY</p><h2>Match controls</h2></div></div>
-              <div class="cn-match-facts"><div><span>FORMAT</span><strong id="matchFormatFact">—</strong></div><div><span>INNINGS</span><strong id="inningsFact">—</strong></div><div><span>PHASE</span><strong id="phaseFact">—</strong></div><div><span>BOWLER QUOTA</span><strong id="quotaFact">—</strong></div></div>
-              <div class="cn-active-players">
-                <label>Striker<input id="activeStriker" type="text" maxlength="28" /></label>
-                <label>Non-striker<input id="activeNonStriker" type="text" maxlength="28" /></label>
-                <label>Current bowler<input id="activeBowler" type="text" maxlength="28" list="bowlerOptions" /><datalist id="bowlerOptions"></datalist></label>
+          <div id="playView" hidden>
+            <section class="mn-page-heading">
+              <div>
+                <a id="backLink" class="mn-crumb" href="#/matches">&larr; Matches</a>
+                <p id="playKicker" class="mn-kicker">MATCH CENTRE</p>
+                <h1 id="playTitle">Match centre</h1>
+                <p id="playMeta" class="mn-subtitle"></p>
               </div>
-              <button id="endInningsBtn" class="cn-button cn-button-muted cn-full-button" type="button">End innings</button>
-              <button id="startScheduledMatchBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Start live scoring</button>
-              <p id="viewerNotice" class="cn-viewer-notice" hidden>Live read-only view · only the assigned scorer can add deliveries.</p>
-              <div id="followOnOptions" class="cn-follow-on" hidden>
-                <p id="followOnCopy">Follow-on is available.</p>
-                <button id="followOnBtn" class="cn-button cn-button-primary" type="button">Enforce follow-on</button>
+              <div class="mn-heading-actions">
+                <span class="mn-saved"><i></i><span id="connectionStatus">Saved on this device</span></span>
+                <a class="mn-button mn-button-muted" href="#/score/new">New match</a>
               </div>
-              <button id="continueBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Continue to next innings</button>
-              <button id="drawBtn" class="cn-text-button cn-full-button" type="button">End match as a draw</button>
-              <button id="superOverBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Start super over</button>
-              <button id="resetBtn" class="cn-reset-button" type="button">Reset match</button>
             </section>
 
-            <section class="cn-panel cn-innings-panel">
-              <div class="cn-panel-heading"><div><p class="cn-kicker">MATCH PROGRESS</p><h2>Innings</h2></div></div>
-              <ol id="inningsList" class="cn-innings-list"><li>Match innings will show here.</li></ol>
-            </section>
+            <div class="mn-tabs" role="tablist" aria-label="Match views">
+              <button class="mn-tab is-active" role="tab" aria-selected="true" data-score-tab="live" type="button">Live scoring</button>
+              <button class="mn-tab" role="tab" aria-selected="false" data-score-tab="stats" type="button">Stats corner</button>
+            </div>
 
-            <p class="cn-disclaimer">Scoring profile based on the ICC Playing Conditions handbook supplied (2019–20). Match officials and competition-specific conditions take precedence.</p>
-          </aside>
+            <div class="mn-workspace">
+              <div class="mn-main-column">
+                <section class="mn-scoreboard" aria-label="Live match score">
+                  <div class="mn-scoreboard-top">
+                    <div>
+                      <span id="formatBadge" class="mn-format-badge">T20I</span>
+                      <p id="inningsLabel" class="mn-innings-label">Set up a match to begin</p>
+                    </div>
+                    <span id="matchStatus" class="mn-status"><i></i> SETUP</span>
+                  </div>
+                  <div class="mn-score-teams">
+                    <div><span class="mn-team-caption">BATTING</span><h2 id="battingTeamName">Batting side</h2></div>
+                    <span class="mn-versus">v</span>
+                    <div class="mn-team-right"><span class="mn-team-caption">BOWLING</span><h2 id="bowlingTeamName">Fielding side</h2></div>
+                  </div>
+                  <div class="mn-scoreline">
+                    <div class="mn-total"><strong id="runsValue">0</strong><span>/ <b id="wicketsValue">0</b></span></div>
+                    <div class="mn-over-readout"><strong id="oversValue">0.0</strong><span>OVERS</span></div>
+                    <div class="mn-rate-readout"><strong id="runRateValue">0.00</strong><span>RUN RATE</span></div>
+                  </div>
+                  <div class="mn-target-line" id="targetLine"><span id="targetLabel">FIRST INNINGS</span><strong id="targetValue">No target</strong><span id="requiredValue"></span></div>
+                  <div class="mn-over-section">
+                    <div class="mn-section-heading"><h3>Current over</h3><span id="overStatus">Waiting for first ball</span></div>
+                    <div id="overBalls" class="mn-over-balls" aria-live="polite"><span class="mn-ball-empty">&mdash;</span></div>
+                  </div>
+                  <div id="resultBanner" class="mn-result" hidden></div>
+                  <p class="mn-scorer-line"><span>Scored by <b id="scorerLine">&mdash;</b></span><span class="mn-watermark">MAIDEN &middot; SPORTSCO</span></p>
+                </section>
+
+                <section id="nextStep" class="mn-next-step" hidden>
+                  <div><p class="mn-kicker">NEXT STEP</p><h2 id="nextStepTitle">Innings complete</h2><p id="nextStepCopy"></p></div>
+                  <div class="mn-next-actions">
+                    <div id="followOnOptions" class="mn-follow-on" hidden>
+                      <p id="followOnCopy">Follow-on is available.</p>
+                      <button id="followOnBtn" class="mn-button mn-button-primary" type="button">Enforce follow-on</button>
+                    </div>
+                    <button id="continueBtn" class="mn-button mn-button-primary" type="button" hidden>Continue to next innings</button>
+                    <button id="superOverBtn" class="mn-button mn-button-primary" type="button" hidden>Start super over</button>
+                    <button id="viewStatsBtn" class="mn-button mn-button-muted" type="button" hidden>View match stats</button>
+                    <a id="backToTournament" class="mn-button mn-button-muted" href="#/tournaments" hidden>Back to tournament</a>
+                    <a id="nextMatchLink" class="mn-button mn-button-muted" href="#/score/new" hidden>Score another match</a>
+                  </div>
+                </section>
+
+                <div id="liveTab">
+                  <section id="scoringPanel" class="mn-panel mn-scoring-panel" hidden>
+                    <div class="mn-panel-heading">
+                      <div><p class="mn-kicker">LIVE SCORING</p><h2>Record delivery</h2></div>
+                      <button id="detailsBtn" class="mn-text-button" type="button">Detailed entry</button>
+                    </div>
+                    <div class="mn-scoring-group">
+                      <span class="mn-control-label">BAT RUNS</span>
+                      <div class="mn-run-buttons" aria-label="Add runs off the bat">
+                        <button class="mn-run-button" data-runs="0" type="button" aria-keyshortcuts="0">0</button>
+                        <button class="mn-run-button" data-runs="1" type="button" aria-keyshortcuts="1">1</button>
+                        <button class="mn-run-button" data-runs="2" type="button" aria-keyshortcuts="2">2</button>
+                        <button class="mn-run-button" data-runs="3" type="button" aria-keyshortcuts="3">3</button>
+                        <button class="mn-run-button mn-boundary" data-runs="4" type="button" aria-keyshortcuts="4">4</button>
+                        <button class="mn-run-button mn-boundary mn-six" data-runs="6" type="button" aria-keyshortcuts="6">6</button>
+                      </div>
+                    </div>
+                    <div class="mn-scoring-group">
+                      <span class="mn-control-label">EXTRAS &amp; DISMISSAL</span>
+                      <div class="mn-extra-buttons">
+                        <button class="mn-extra-button" data-extra="wide" type="button"><b>WD</b><span>Wide</span></button>
+                        <button class="mn-extra-button" data-extra="noBall" type="button"><b>NB</b><span>No ball</span></button>
+                        <button class="mn-extra-button" data-extra="bye" type="button"><b>B</b><span>Bye</span></button>
+                        <button class="mn-extra-button" data-extra="legBye" type="button"><b>LB</b><span>Leg bye</span></button>
+                        <button id="wicketBtn" class="mn-extra-button mn-wicket-button" type="button" aria-keyshortcuts="w"><b>W</b><span>Wicket</span></button>
+                      </div>
+                    </div>
+                    <div class="mn-score-actions">
+                      <span id="freeHitNotice" class="mn-free-hit" hidden>FREE HIT</span>
+                      <span class="mn-shortcuts">Keys: 0&ndash;4 &middot; 6 &middot; W wicket &middot; U undo</span>
+                      <button id="undoBtn" class="mn-button mn-button-muted" type="button" aria-keyshortcuts="u">Undo last delivery</button>
+                    </div>
+                    <p id="actionMessage" class="mn-action-message" aria-live="polite"></p>
+                  </section>
+
+                  <div class="mn-player-grid">
+                    <section class="mn-panel">
+                      <div class="mn-panel-heading"><div><p class="mn-kicker">BATTING CARD</p><h2>At the crease</h2></div><span id="battingExtras" class="mn-table-note">Extras 0</span></div>
+                      <div class="mn-table-wrap">
+                        <table class="mn-table">
+                          <thead><tr><th>BATTER</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead>
+                          <tbody id="battingRows"><tr><td colspan="6" class="mn-empty-cell">Player figures appear when a match starts.</td></tr></tbody>
+                        </table>
+                      </div>
+                      <div class="mn-fall-wickets"><span>FALL OF WICKETS</span><p id="fallOfWickets">&mdash;</p></div>
+                    </section>
+                    <section class="mn-panel">
+                      <div class="mn-panel-heading"><div><p class="mn-kicker">BOWLING CARD</p><h2>Bowling figures</h2></div><span id="bowlerQuota" class="mn-table-note">Limit &mdash;</span></div>
+                      <div class="mn-table-wrap">
+                        <table class="mn-table mn-bowling-table">
+                          <thead><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECON</th></tr></thead>
+                          <tbody id="bowlingRows"><tr><td colspan="6" class="mn-empty-cell">Bowler figures appear when a match starts.</td></tr></tbody>
+                        </table>
+                      </div>
+                      <div class="mn-fall-wickets"><span>INNINGS EXTRAS</span><p id="extrasBreakdown">NB 0 &middot; WD 0 &middot; B 0 &middot; LB 0</p></div>
+                    </section>
+                  </div>
+
+                  <section class="mn-panel mn-commentary-panel">
+                    <div class="mn-panel-heading"><div><p class="mn-kicker">DELIVERY LOG</p><h2>Commentary</h2></div><span id="deliveryCount" class="mn-table-note">0 deliveries</span></div>
+                    <ol id="commentaryList" class="mn-commentary" aria-live="polite"><li class="mn-empty-cell">Ball-by-ball entries will appear here.</li></ol>
+                  </section>
+                </div>
+
+                <section id="statsTab" class="mn-stats" hidden></section>
+              </div>
+
+              <aside class="mn-side-column">
+                <section id="inPlayPanel" class="mn-panel mn-inplay-panel">
+                  <div class="mn-panel-heading"><div><p class="mn-kicker">IN PLAY</p><h2>Match controls</h2></div></div>
+                  <div class="mn-match-facts"><div><span>FORMAT</span><strong id="matchFormatFact">&mdash;</strong></div><div><span>INNINGS</span><strong id="inningsFact">&mdash;</strong></div><div><span>PHASE</span><strong id="phaseFact">&mdash;</strong></div><div><span>BOWLER QUOTA</span><strong id="quotaFact">&mdash;</strong></div></div>
+                  <div class="mn-active-players">
+                    <label>Scorer<input id="activeScorer" type="text" maxlength="40" placeholder="Scorer name" /></label>
+                    <label>Striker<input id="activeStriker" type="text" maxlength="28" /></label>
+                    <label>Non-striker<input id="activeNonStriker" type="text" maxlength="28" /></label>
+                    <label>Current bowler<input id="activeBowler" type="text" maxlength="28" list="bowlerOptions" /><datalist id="bowlerOptions"></datalist></label>
+                  </div>
+                  <button id="endInningsBtn" class="mn-button mn-button-muted mn-full-button" type="button">End innings</button>
+                  <button id="drawBtn" class="mn-text-button mn-full-button" type="button">End match as a draw</button>
+                  <button id="deleteMatchBtn" class="mn-reset-button" type="button">Delete this match</button>
+                </section>
+
+                <section class="mn-panel mn-innings-panel">
+                  <div class="mn-panel-heading"><div><p class="mn-kicker">MATCH PROGRESS</p><h2>Innings</h2></div></div>
+                  <ol id="inningsList" class="mn-innings-list"><li>Match innings will show here.</li></ol>
+                </section>
+
+                <p class="mn-disclaimer">Scoring profile based on the ICC Playing Conditions handbook supplied (2019&ndash;20). Match officials and competition-specific conditions take precedence.</p>
+              </aside>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer class="cn-footer"><span>CRICNOVA</span><span>Score with clarity.</span></footer>
-    </div>
+      </section>
 
-    <dialog id="deliveryDialog" class="cn-dialog">
+      <!-- ================= MATCHES ================= -->
+      <section class="mn-view" data-view="matches" aria-label="Matches" hidden>
+        <div class="mn-shell">
+          <div class="mn-page-heading">
+            <div>
+              <p class="mn-kicker">LIVE MATCHES</p>
+              <h1>Matches on this device</h1>
+              <p class="mn-subtitle">Resume a live scorecard, or open a finished match to read its stats.</p>
+            </div>
+            <div class="mn-heading-actions"><a class="mn-button mn-button-primary" href="#/score/new">New match</a></div>
+          </div>
+          <div class="mn-toolbar">
+            <div id="matchFilters" class="mn-seg" role="group" aria-label="Filter matches">
+              <button class="mn-seg-button is-active" type="button" data-match-filter="all" aria-pressed="true">All</button>
+              <button class="mn-seg-button" type="button" data-match-filter="live" aria-pressed="false">Live</button>
+              <button class="mn-seg-button" type="button" data-match-filter="complete" aria-pressed="false">Completed</button>
+            </div>
+            <p id="storageNote" class="mn-table-note"></p>
+          </div>
+          <div id="matchesGrid" class="mn-match-grid"></div>
+        </div>
+      </section>
+
+      <!-- ================= TOURNAMENTS ================= -->
+      <section class="mn-view" data-view="tournaments" aria-label="Tournaments" hidden>
+        <div class="mn-shell">
+          <div id="tournamentsHome">
+            <div class="mn-page-heading">
+              <div>
+                <p class="mn-kicker">TOURNAMENTS</p>
+                <h1>Your tournaments</h1>
+                <p class="mn-subtitle">Create a league or a full World Cup, assign scorers to fixtures and follow the table live.</p>
+              </div>
+              <div class="mn-heading-actions"><button id="newTournamentBtn" class="mn-button mn-button-primary" type="button">Create tournament</button></div>
+            </div>
+            <div id="tournamentList" class="mn-tournament-grid"></div>
+          </div>
+          <div id="tournamentDetail" hidden></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mn-site-footer">
+      <div class="mn-container mn-site-footer-inner">
+        <div class="mn-footer-brand"><img src="app-icon.svg?v=maiden2" alt="" width="34" height="34" /><div><strong>Maiden</strong><small>a SportsCo product</small></div></div>
+        <p>Scoring follows the ICC Playing Conditions handbook supplied (2019&ndash;20). Maiden is a scoring aid and not an official ICC product.</p>
+        <p class="mn-copyright">&copy; <span id="yearNow">2026</span> SportsCo. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <dialog id="deliveryDialog" class="mn-dialog">
       <form id="deliveryForm" method="dialog">
-        <div class="cn-dialog-heading"><div><p class="cn-kicker">SCORER ENTRY</p><h2>Detailed delivery</h2></div><button class="cn-close-button" type="button" data-close-dialog aria-label="Close">×</button></div>
-        <div class="cn-form-pair"><label>Runs off bat<input id="detailBatRuns" type="number" min="0" max="6" value="0" /></label><label>Wide runs completed<input id="detailWideRuns" type="number" min="0" max="6" value="0" /></label></div>
-        <div class="cn-check-row"><label><input id="detailNoBall" type="checkbox" /> No-ball (adds 1 penalty)</label><label><input id="detailWide" type="checkbox" /> Wide (adds 1 penalty)</label></div>
-        <div class="cn-form-pair"><label>Byes<input id="detailByes" type="number" min="0" max="6" value="0" /></label><label>Leg-byes<input id="detailLegByes" type="number" min="0" max="6" value="0" /></label></div>
-        <div class="cn-form-pair"><label>Penalty runs<input id="detailPenalty" type="number" min="0" max="10" value="0" /></label><label>Dismissal<select id="detailWicket"><option value="">No wicket</option><option value="bowled">Bowled</option><option value="caught">Caught</option><option value="lbw">LBW</option><option value="runOut">Run out</option><option value="stumped">Stumped</option><option value="hitWicket">Hit wicket</option><option value="hitBallTwice">Hit the ball twice</option><option value="obstructing">Obstructing the field</option></select></label></div>
-        <div id="dismissalFields" class="cn-form-pair" hidden><label>Dismissed batter<select id="detailDismissed"><option value="striker">Striker</option><option value="nonStriker">Non-striker</option></select></label><label>Incoming batter<input id="incomingBatter" type="text" maxlength="28" /></label></div>
-        <p id="dialogMessage" class="cn-action-message" aria-live="polite"></p>
-        <div class="cn-dialog-actions"><button class="cn-button cn-button-muted" type="button" data-close-dialog>Cancel</button><button id="saveDeliveryBtn" class="cn-button cn-button-primary" type="button">Add to scorecard</button></div>
+        <div class="mn-dialog-heading"><div><p class="mn-kicker">SCORER ENTRY</p><h2>Detailed delivery</h2></div><button class="mn-close-button" type="button" data-close-dialog aria-label="Close">&times;</button></div>
+        <div class="mn-form-pair"><label>Runs off bat<input id="detailBatRuns" type="number" min="0" max="6" value="0" /></label><label>Wide runs completed<input id="detailWideRuns" type="number" min="0" max="6" value="0" /></label></div>
+        <div class="mn-check-row"><label><input id="detailNoBall" type="checkbox" /> No-ball (adds 1 penalty)</label><label><input id="detailWide" type="checkbox" /> Wide (adds 1 penalty)</label></div>
+        <div class="mn-form-pair"><label>Byes<input id="detailByes" type="number" min="0" max="6" value="0" /></label><label>Leg-byes<input id="detailLegByes" type="number" min="0" max="6" value="0" /></label></div>
+        <div class="mn-form-pair"><label>Penalty runs<input id="detailPenalty" type="number" min="0" max="10" value="0" /></label><label>Dismissal<select id="detailWicket"><option value="">No wicket</option><option value="bowled">Bowled</option><option value="caught">Caught</option><option value="lbw">LBW</option><option value="runOut">Run out</option><option value="stumped">Stumped</option><option value="hitWicket">Hit wicket</option><option value="hitBallTwice">Hit the ball twice</option><option value="obstructing">Obstructing the field</option></select></label></div>
+        <div id="dismissalFields" class="mn-form-pair" hidden><label>Dismissed batter<select id="detailDismissed"><option value="striker">Striker</option><option value="nonStriker">Non-striker</option></select></label><label>Incoming batter<input id="incomingBatter" type="text" maxlength="28" /></label></div>
+        <p id="dialogMessage" class="mn-action-message" aria-live="polite"></p>
+        <div class="mn-dialog-actions"><button class="mn-button mn-button-muted" type="button" data-close-dialog>Cancel</button><button id="saveDeliveryBtn" class="mn-button mn-button-primary" type="button">Add to scorecard</button></div>
       </form>
     </dialog>
-    <div id="toast" class="cn-toast" role="status" aria-live="polite"></div>
-      </div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=cricnova7"></script>
-    <script src="portal.js?v=cricnova7"></script>
-    <script src="app.js?v=cricnova7"></script>
+
+    <dialog id="scorerDialog" class="mn-dialog mn-dialog-small">
+      <form id="scorerForm" method="dialog" autocomplete="off">
+        <div class="mn-dialog-heading"><div><p class="mn-kicker">SCORER DETAILS</p><h2>Who is scoring?</h2></div><button class="mn-close-button" type="button" data-close-dialog aria-label="Close">&times;</button></div>
+        <label class="mn-field">Scorer name<input id="scorerDialogInput" type="text" maxlength="40" placeholder="e.g. Asha Rao" autocomplete="name" /></label>
+        <p class="mn-hint">Shown on scoreboards, match lists and fixtures. Saved on this device only.</p>
+        <div class="mn-dialog-actions"><button class="mn-button mn-button-muted" type="button" data-close-dialog>Cancel</button><button class="mn-button mn-button-primary" type="submit">Save</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="tournamentDialog" class="mn-dialog mn-dialog-wide">
+      <form id="tournamentForm" method="dialog" autocomplete="off">
+        <div class="mn-dialog-heading"><div><p class="mn-kicker">NEW TOURNAMENT</p><h2>Create a tournament</h2></div><button class="mn-close-button" type="button" data-close-dialog aria-label="Close">&times;</button></div>
+        <div class="mn-template-cards" role="radiogroup" aria-label="Tournament template">
+          <label class="mn-template-card"><input type="radio" name="template" value="worldcup" checked /><span><b>World Cup</b><small>Two groups, semi-finals and a final</small></span></label>
+          <label class="mn-template-card"><input type="radio" name="template" value="league" /><span><b>League</b><small>Round robin, then semis and final</small></span></label>
+          <label class="mn-template-card"><input type="radio" name="template" value="custom" /><span><b>Custom</b><small>Add your own fixtures</small></span></label>
+        </div>
+        <div class="mn-form-pair"><label>Tournament name<input id="tbName" type="text" maxlength="60" placeholder="Maiden World Cup" required /></label><label>Season<input id="tbSeason" type="text" maxlength="24" placeholder="2026" /></label></div>
+        <div class="mn-form-pair"><label>Format<select id="tbFormat"><option value="odi">One Day International</option><option value="t20">T20 International</option><option value="test">Test</option></select></label><label id="tbOversField">Overs per innings<input id="tbOvers" type="number" min="1" max="50" value="50" inputmode="numeric" /></label></div>
+        <div id="tbTeamsBlock" class="mn-team-block">
+          <div class="mn-form-pair mn-team-head"><label>Preset teams<select id="tbTeamCount"><option value="6">6 teams</option><option value="8" selected>8 teams</option><option value="10">10 teams</option><option value="12">12 teams</option><option value="14">14 teams</option><option value="16">16 teams</option></select></label><p class="mn-hint">Edit the list below &mdash; one team per line.</p></div>
+          <label>Teams<textarea id="tbTeams" rows="6" spellcheck="false"></textarea></label>
+        </div>
+        <details class="mn-more">
+          <summary>More details <span>host, venue, dates</span></summary>
+          <div class="mn-form-pair"><label>Host / organiser<input id="tbHost" type="text" maxlength="60" /></label><label>Primary venue<input id="tbVenue" type="text" maxlength="60" /></label></div>
+          <div class="mn-form-pair"><label>City<input id="tbCity" type="text" maxlength="40" /></label><label>Country<input id="tbCountry" type="text" maxlength="40" /></label></div>
+          <div class="mn-form-pair"><label>Starts<input id="tbStart" type="date" /></label><label>Ends<input id="tbEnd" type="date" /></label></div>
+        </details>
+        <p id="tbSummary" class="mn-summary-line"></p>
+        <p id="tbMessage" class="mn-action-message" aria-live="polite"></p>
+        <div class="mn-dialog-actions"><button class="mn-button mn-button-muted" type="button" data-close-dialog>Cancel</button><button class="mn-button mn-button-primary" type="submit">Create tournament</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="fixtureDialog" class="mn-dialog mn-dialog-small">
+      <form id="fixtureForm" method="dialog" autocomplete="off">
+        <div class="mn-dialog-heading"><div><p class="mn-kicker">FIXTURE</p><h2>Add a fixture</h2></div><button class="mn-close-button" type="button" data-close-dialog aria-label="Close">&times;</button></div>
+        <div class="mn-form-pair"><label>Team A<input id="fxTeamA" type="text" maxlength="28" required /></label><label>Team B<input id="fxTeamB" type="text" maxlength="28" required /></label></div>
+        <div class="mn-form-pair"><label>Assigned scorer<input id="fxScorer" type="text" maxlength="40" /></label><label>Venue<input id="fxVenue" type="text" maxlength="60" /></label></div>
+        <label class="mn-field">Scheduled start <span class="mn-optional">optional</span><input id="fxTime" type="datetime-local" /></label>
+        <p id="fxMessage" class="mn-action-message" aria-live="polite"></p>
+        <div class="mn-dialog-actions"><button class="mn-button mn-button-muted" type="button" data-close-dialog>Cancel</button><button class="mn-button mn-button-primary" type="submit">Add fixture</button></div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="mn-toast" role="status" aria-live="polite"></div>
+    <noscript><p class="mn-noscript">Maiden needs JavaScript to run. Please enable it and reload.</p></noscript>
+
+    <script src="engine.js?v=maiden2"></script>
+    <script src="store.js?v=maiden2"></script>
+    <script src="tournament.js?v=maiden2"></script>
+    <script src="stats.js?v=maiden2"></script>
+    <script src="app.js?v=maiden2"></script>
+    <script src="hub.js?v=maiden2"></script>
   </body>
 </html>
