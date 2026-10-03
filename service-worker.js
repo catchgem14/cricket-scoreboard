@@ -1,8 +1,8 @@
-﻿const CACHE_NAME = 'maiden-v2';
+﻿const CACHE_NAME = 'maiden-v3';
 const APP_FILES = [
   './',
   './index.html',
-  './styles.css?v=maiden2',
+  './styles.css?v=maiden3',
   './engine.js?v=maiden2',
   './store.js?v=maiden2',
   './tournament.js?v=maiden2',
