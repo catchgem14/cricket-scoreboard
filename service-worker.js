@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cricket-scoreboard-v1';
+const CACHE_NAME = 'cricket-scoreboard-v2';
 const APP_FILES = [
   './',
   './index.html',
@@ -6,6 +6,8 @@ const APP_FILES = [
   './app.js',
   './manifest.webmanifest',
   './app-icon.svg',
+  './icon-192.png',
+  './icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
