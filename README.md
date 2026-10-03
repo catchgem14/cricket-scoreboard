@@ -9,6 +9,7 @@ A lightweight cricket scoring app built with plain HTML, CSS, and JavaScript so 
 - Undo and reset controls
 - Responsive layout for desktop, laptop, tablet, and mobile
 - Stores match state locally in the browser
+- Can be installed on Android from Chrome and runs offline after its first visit
 
 ## Local run
 
@@ -20,6 +21,10 @@ python -m http.server 8000
 ```
 
 Then open http://localhost:8000 in a browser.
+
+## Install on Android
+
+After the site is published over HTTPS, open it in Chrome on Android, open the browser menu, and choose **Install app** or **Add to Home screen**. The app shell is cached for offline launches; match data remains saved on that device.
 
 ## GitHub Pages deployment
 
