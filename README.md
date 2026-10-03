@@ -17,8 +17,9 @@ CricNova is a responsive, installable cricket scorer built with plain HTML, CSS,
 1. Create a Supabase project.
 2. Run `supabase/schema.sql` in the Supabase SQL Editor.
 3. In the Supabase dashboard, enable Realtime for the `public.matches` table and configure email-link authentication with the GitHub Pages URL as an allowed redirect.
-4. Copy the project URL and **publishable** key into `supabase-config.js`. Never use a service-role key in this browser app.
-5. Publish the updated files to GitHub Pages.
+4. Configure custom SMTP in Supabase Auth before inviting scorers outside the project team; the built-in email sender has restricted delivery.
+5. Copy the project URL and **publishable** key into `supabase-config.js`. Never use a service-role key in this browser app.
+6. Publish the updated files to GitHub Pages.
 
 The tournament creator becomes an admin and receives an invite code. Members join as scorers; an admin can change them to viewers or admins, create fixtures, and assign each match to one scorer. Different assigned matches can be scored at the same time. Other tournament members receive live, read-only score updates. Score writes use a version check so stale tabs are stopped instead of silently replacing a newer score.
 
