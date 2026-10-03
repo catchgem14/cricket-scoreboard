@@ -13,6 +13,8 @@ const WICKET_LABELS = {
 
 const $ = (id) => document.getElementById(id);
 const refs = {
+  portalApp: $('portalApp'), scorerApp: $('scorerApp'), setupPanel: $('setupPanel'), resetBtn: $('resetBtn'),
+  startScheduledMatchBtn: $('startScheduledMatchBtn'), viewerNotice: $('viewerNotice'), backToPortalBtn: $('backToPortalBtn'),
   setupForm: $('setupForm'), formatInput: $('formatInput'), oversInput: $('oversInput'), oversField: $('oversField'),
   teamAInput: $('teamAInput'), teamBInput: $('teamBInput'), tossWinnerInput: $('tossWinnerInput'),
   tossDecisionInput: $('tossDecisionInput'), openerInput: $('openerInput'), nonStrikerInput: $('nonStrikerInput'),
@@ -52,10 +54,15 @@ function loadState() {
 
 let state = loadState();
 let toastTimer;
+let activeCloudMatchId = '';
+let activeCloudCanScore = true;
+let localDemo = false;
 
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const snapshot = JSON.stringify(state);
+    localStorage.setItem(activeCloudMatchId ? `${STORAGE_KEY}:${activeCloudMatchId}` : STORAGE_KEY, snapshot);
+    if (activeCloudMatchId) window.CricNovaPortal?.persistScore(activeCloudMatchId, JSON.parse(snapshot));
   } catch (error) {
     showToast('This browser could not save the match locally.');
   }
@@ -197,6 +204,7 @@ function maxBowlerOvers(innings) {
 function makeDelivery(input) {
   const innings = activeInnings();
   if (!innings || state.status !== 'playing' || innings.completed) return;
+  if (activeCloudMatchId && !activeCloudCanScore) return showMessage('This match is read-only for your tournament role.');
   const statsBefore = getInningsStats(innings);
   const noBall = Boolean(input.noBall);
   const wide = Boolean(input.wide && !noBall);
@@ -593,12 +601,12 @@ function renderInningsList() {
 function render() {
   const innings = activeInnings();
   const inMatch = state.started && innings;
-  refs.setupPanel.hidden = Boolean(state.started);
+  refs.setupPanel.hidden = Boolean(state.started) || Boolean(activeCloudMatchId);
   refs.inPlayPanel.hidden = !state.started;
-  refs.scoringPanel.hidden = !inMatch || state.status !== 'playing';
+  refs.scoringPanel.hidden = !inMatch || state.status !== 'playing' || (Boolean(activeCloudMatchId) && !activeCloudCanScore);
   refs.inningsList.closest('.cn-innings-panel').hidden = !state.started;
   refs.formatBadge.textContent = FORMAT_RULES[state.format]?.short || 'T20I';
-  refs.matchStatus.innerHTML = `<i></i> ${state.status === 'playing' ? (innings?.isSuperOver ? 'SUPER OVER' : 'LIVE') : state.status === 'complete' ? 'RESULT' : state.started ? 'INNINGS BREAK' : 'SETUP'}`;
+  refs.matchStatus.innerHTML = `<i></i> ${state.status === 'playing' ? (innings?.isSuperOver ? 'SUPER OVER' : 'LIVE') : state.status === 'complete' ? 'RESULT' : state.status === 'scheduled' ? 'SCHEDULED' : state.started ? 'INNINGS BREAK' : 'SETUP'}`;
   refs.matchStatus.className = `cn-status ${state.status === 'playing' ? 'is-live' : state.status === 'complete' ? 'is-result' : ''}`;
   refs.resultBanner.hidden = !state.result;
   refs.resultBanner.textContent = state.result?.text || '';
@@ -645,16 +653,25 @@ function render() {
   refs.activeNonStriker.value = innings.playerNames[innings.nonStriker] || '';
   refs.activeBowler.value = innings.currentBowler || '';
   refs.freeHitNotice.hidden = !innings.freeHitPending;
+  refs.startScheduledMatchBtn.hidden = state.status !== 'scheduled' || !activeCloudMatchId || !activeCloudCanScore;
+  refs.viewerNotice.hidden = !activeCloudMatchId || activeCloudCanScore;
+  refs.resetBtn.hidden = Boolean(activeCloudMatchId);
+  refs.activeStriker.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
+  refs.activeNonStriker.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
+  refs.activeBowler.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
   refs.endInningsBtn.textContent = state.format === 'test' ? 'Declare / close innings' : 'End innings';
-  refs.endInningsBtn.disabled = state.status !== 'playing';
+  refs.endInningsBtn.disabled = state.status !== 'playing' || (Boolean(activeCloudMatchId) && !activeCloudCanScore);
   const followOnAvailable = state.format === 'test' && state.innings.length === 2 && !innings.isSuperOver && teamRuns(state.innings[0].teamIndex) - teamRuns(state.innings[1].teamIndex) >= 200;
   refs.followOnOptions.hidden = !(state.status === 'innings-break' && followOnAvailable);
   if (followOnAvailable) refs.followOnCopy.textContent = `${state.teams[state.innings[0].teamIndex]} lead by ${teamRuns(state.innings[0].teamIndex) - teamRuns(state.innings[1].teamIndex)}. The 200-run follow-on threshold is met.`;
   refs.continueBtn.hidden = state.status !== 'innings-break' || state.status === 'complete';
+  refs.continueBtn.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
   refs.continueBtn.textContent = followOnAvailable ? 'Continue without follow-on' : state.format === 'test' ? 'Continue to next innings' : state.currentIndex === 0 ? 'Start second innings' : 'Continue';
   refs.drawBtn.hidden = state.format !== 'test' || state.status === 'complete';
+  refs.drawBtn.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
   refs.superOverBtn.hidden = state.format === 'test' || state.status !== 'complete' || !state.result?.tied;
-  refs.scoringPanel.hidden = state.status !== 'playing';
+  refs.superOverBtn.disabled = Boolean(activeCloudMatchId) && !activeCloudCanScore;
+  refs.scoringPanel.hidden = state.status !== 'playing' || (Boolean(activeCloudMatchId) && !activeCloudCanScore);
   refs.inPlayPanel.hidden = false;
   renderBatting(innings, stats);
   renderBowling(innings, stats);
@@ -713,11 +730,65 @@ function bindEvents() {
   refs.activeStriker.addEventListener('change', () => changeActiveName('striker', refs.activeStriker.value));
   refs.activeNonStriker.addEventListener('change', () => changeActiveName('nonStriker', refs.activeNonStriker.value));
   refs.activeBowler.addEventListener('change', () => changeBowler(refs.activeBowler.value));
-  $('newMatchBtn').addEventListener('click', resetMatch);
+  $('newMatchBtn').addEventListener('click', () => {
+    if (activeCloudMatchId) window.CricNovaPortal?.returnToPortal();
+    else resetMatch();
+  });
   $('resetBtn').addEventListener('click', resetMatch);
+  refs.startScheduledMatchBtn.addEventListener('click', () => {
+    if (!activeCloudMatchId || !activeCloudCanScore) return;
+    state.status = 'playing';
+    saveState();
+    render();
+  });
   window.addEventListener('online', () => { $('connectionStatus').textContent = 'Online'; });
   window.addEventListener('offline', () => { $('connectionStatus').textContent = 'Offline · saved on device'; });
 }
+
+function loadWorkspaceMatch(event) {
+  const detail = event.detail || {};
+  activeCloudMatchId = detail.local ? '' : (detail.match?.id || '');
+  activeCloudCanScore = detail.canScore !== false;
+  localDemo = Boolean(detail.local);
+  if (detail.state) state = JSON.parse(JSON.stringify(detail.state));
+  else if (localDemo) state = loadState();
+  refs.portalApp.hidden = true;
+  refs.scorerApp.hidden = false;
+  refs.backToPortalBtn.hidden = false;
+  $('newMatchBtn').hidden = Boolean(activeCloudMatchId);
+  $('newMatchBtn').textContent = 'New match';
+  render();
+}
+
+function applyRemoteMatchState(event) {
+  const detail = event.detail || {};
+  if (!activeCloudMatchId || detail.match?.id !== activeCloudMatchId || !detail.state) return;
+  state = JSON.parse(JSON.stringify(detail.state));
+  activeCloudCanScore = detail.canScore !== false;
+  localStorage.setItem(`${STORAGE_KEY}:${activeCloudMatchId}`, JSON.stringify(state));
+  render();
+}
+
+function leaveWorkspaceMatch() {
+  activeCloudMatchId = '';
+  activeCloudCanScore = true;
+  localDemo = false;
+  state = freshState();
+  refs.portalApp.hidden = false;
+  refs.scorerApp.hidden = true;
+  refs.backToPortalBtn.hidden = true;
+  $('newMatchBtn').hidden = false;
+  render();
+}
+
+window.addEventListener('cricnova:openMatch', loadWorkspaceMatch);
+window.addEventListener('cricnova:remoteState', applyRemoteMatchState);
+window.addEventListener('cricnova:closeMatch', leaveWorkspaceMatch);
+window.addEventListener('cricnova:permissionChanged', (event) => {
+  activeCloudCanScore = Boolean(event.detail?.canScore);
+  render();
+});
+window.addEventListener('cricnova:cloudError', (event) => showToast(event.detail?.message || 'Cloud save failed.'));
 
 bindEvents();
 onFormatChange();

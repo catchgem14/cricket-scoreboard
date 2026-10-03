@@ -5,19 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#07323c" />
     <meta name="description" content="CricNova is a multi-format cricket scoring desk for Test, ODI and T20 matches." />
-    <link rel="manifest" href="manifest.webmanifest?v=cricnova4" />
-    <link rel="icon" href="app-icon.svg?v=cricnova4" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=cricnova4" />
+    <link rel="manifest" href="manifest.webmanifest?v=cricnova7" />
+    <link rel="icon" href="app-icon.svg?v=cricnova7" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=cricnova7" />
     <title>CricNova | International Score Centre</title>
   </head>
   <body class="cn-body">
-    <div class="cn-shell">
+    <div id="portalApp" class="cn-portal">
+      <header class="cn-portal-topbar">
+        <a class="cn-brand" href="./" aria-label="CricNova home">
+          <span class="cn-brand-mark">CN</span>
+          <span><strong>CricNova</strong><small>TOURNAMENT SCORE CENTRE</small></span>
+        </a>
+        <div id="accountTools" class="cn-account-tools" hidden>
+          <span id="accountIdentity"></span>
+          <button id="signOutBtn" class="cn-button cn-button-muted" type="button">Sign out</button>
+        </div>
+      </header>
+
+      <main class="cn-portal-main">
+        <section id="authPanel" class="cn-auth-layout">
+          <div class="cn-auth-copy">
+            <p class="cn-kicker">MULTI-SCORER WORKSPACE</p>
+            <h1>Every match,<br />on the same page.</h1>
+            <p>Sign in to manage tournaments, assign scorers, and follow live scorecards from anywhere.</p>
+            <div class="cn-auth-capabilities"><span>TOURNAMENTS</span><span>SCORER ROLES</span><span>LIVE MATCHES</span></div>
+          </div>
+          <section class="cn-panel cn-auth-panel">
+            <p class="cn-kicker">SCORER ACCESS</p>
+            <h2>Sign in to CricNova</h2>
+            <form id="authForm" class="cn-form">
+              <label>Email address<input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
+              <button id="authSubmit" class="cn-button cn-button-primary" type="submit">Email me a sign-in link</button>
+            </form>
+            <p id="authMessage" class="cn-action-message" aria-live="polite"></p>
+            <div id="cloudSetupNotice" class="cn-cloud-setup" hidden>
+              <strong>Cloud scoring needs a Supabase project.</strong>
+              <p>Add its project URL and public publishable key to <code>supabase-config.js</code>, then apply <code>supabase/schema.sql</code> in the Supabase SQL Editor.</p>
+              <button id="localDemoBtn" class="cn-text-button" type="button">Open this device’s local scorer</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="dashboardPanel" class="cn-dashboard" hidden>
+          <div class="cn-dashboard-heading">
+            <div><p class="cn-kicker">SCORER WORKSPACE</p><h1>Your tournaments</h1></div>
+            <p id="dashboardMessage" class="cn-action-message" aria-live="polite"></p>
+          </div>
+          <div class="cn-dashboard-grid">
+            <aside class="cn-dashboard-sidebar">
+              <section class="cn-panel">
+                <div class="cn-panel-heading"><div><p class="cn-kicker">WORKSPACE</p><h2>Tournaments</h2></div><span id="tournamentCount" class="cn-table-note">0</span></div>
+                <ul id="tournamentList" class="cn-tournament-list"><li class="cn-empty-cell">Create a tournament or join with an invite code.</li></ul>
+              </section>
+              <section id="tournamentAccessPanel" class="cn-panel">
+                <div class="cn-panel-heading"><div><p class="cn-kicker">ACCESS</p><h2>Create or join</h2></div></div>
+                <form id="newTournamentForm" class="cn-form">
+                  <label>Tournament name<input id="tournamentName" type="text" maxlength="100" placeholder="Coastal Premier League" required /></label>
+                  <div class="cn-form-pair"><label>Season<input id="tournamentSeason" type="text" maxlength="24" placeholder="2026" /></label><label>Host / organizer<input id="tournamentHost" type="text" maxlength="80" placeholder="Club or board" /></label></div>
+                  <label>Primary venue<input id="tournamentVenue" type="text" maxlength="100" placeholder="Ground name" /></label>
+                  <div class="cn-form-pair"><label>City<input id="tournamentCity" type="text" maxlength="80" /></label><label>Country<input id="tournamentCountry" type="text" maxlength="80" /></label></div>
+                  <div class="cn-form-pair"><label>Starts<input id="tournamentStart" type="date" /></label><label>Ends<input id="tournamentEnd" type="date" /></label></div>
+                  <button class="cn-button cn-button-primary" type="submit">Create tournament</button>
+                </form>
+                <div class="cn-join-divider"><span>OR JOIN</span></div>
+                <form id="joinTournamentForm" class="cn-form">
+                  <label>Invite code<input id="tournamentInviteInput" type="text" maxlength="16" placeholder="ENTER CODE" autocomplete="off" required /></label>
+                  <button class="cn-button cn-button-muted" type="submit">Join tournament</button>
+                </form>
+              </section>
+            </aside>
+
+            <div class="cn-dashboard-main">
+              <section id="tournamentOverview" class="cn-panel cn-tournament-overview" hidden>
+                <div class="cn-panel-heading"><div><p id="selectedTournamentMeta" class="cn-kicker">TOURNAMENT</p><h2 id="selectedTournamentTitle">Select a tournament</h2></div><span id="selectedTournamentRole" class="cn-role-badge"></span></div>
+                <div id="selectedTournamentDetails" class="cn-tournament-facts"></div>
+                <div id="inviteCodeRow" class="cn-invite-row" hidden><span>SCORER INVITE CODE</span><strong id="inviteCodeValue"></strong><button id="copyInviteBtn" class="cn-text-button" type="button">Copy code</button></div>
+              </section>
+
+              <section id="newMatchPanel" class="cn-panel" hidden>
+                <div class="cn-panel-heading"><div><p class="cn-kicker">TOURNAMENT FIXTURE</p><h2>Schedule a match</h2></div></div>
+                <form id="newMatchForm" class="cn-form cn-match-form">
+                  <div class="cn-form-pair"><label>Team A<input id="newMatchTeamA" type="text" maxlength="80" required /></label><label>Team B<input id="newMatchTeamB" type="text" maxlength="80" required /></label></div>
+                  <div class="cn-form-pair"><label>Format<select id="newMatchFormat"><option value="t20">T20 International</option><option value="odi">One Day International</option><option value="test">Test</option></select></label><label id="newMatchOversField">Overs<input id="newMatchOvers" type="number" min="1" max="50" value="20" /></label></div>
+                  <div class="cn-form-pair"><label>Venue<input id="newMatchVenue" type="text" maxlength="100" /></label><label>Scheduled start<input id="newMatchTime" type="datetime-local" /></label></div>
+                  <div class="cn-form-pair"><label>Toss won by<select id="newMatchToss"><option value="0">Team A</option><option value="1">Team B</option></select></label><label>Decision<select id="newMatchDecision"><option value="bat">Bat</option><option value="field">Field</option></select></label></div>
+                  <div class="cn-form-pair"><label>Opening striker<input id="newMatchStriker" type="text" maxlength="28" value="Batter 1" /></label><label>Non-striker<input id="newMatchNonStriker" type="text" maxlength="28" value="Batter 2" /></label></div>
+                  <div class="cn-form-pair"><label>Opening bowler<input id="newMatchBowler" type="text" maxlength="28" value="Bowler 1" /></label><label>Assigned scorer<select id="newMatchScorer" required></select></label></div>
+                  <button class="cn-button cn-button-primary" type="submit">Create match</button>
+                </form>
+              </section>
+
+              <section id="matchesPanel" class="cn-panel" hidden>
+                <div class="cn-panel-heading"><div><p class="cn-kicker">FIXTURES</p><h2>Matches</h2></div><span id="matchCount" class="cn-table-note">0 matches</span></div>
+                <div id="matchList" class="cn-match-list"><p class="cn-empty-cell">No matches scheduled yet.</p></div>
+              </section>
+
+              <section id="membersPanel" class="cn-panel" hidden>
+                <div class="cn-panel-heading"><div><p class="cn-kicker">TOURNAMENT ACCESS</p><h2>Scorers and viewers</h2></div></div>
+                <div id="memberList" class="cn-member-list"></div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="cn-footer"><span>CRICNOVA</span><span>One active scorer per match · live scorecards for everyone on the tournament</span></footer>
+    </div>
+
+    <div id="scorerApp" class="cn-shell" hidden>
       <header class="cn-topbar">
         <a class="cn-brand" href="./" aria-label="CricNova home">
           <span class="cn-brand-mark">CN</span>
           <span><strong>CricNova</strong><small>INTERNATIONAL SCORE CENTRE</small></span>
         </a>
         <div class="cn-top-actions">
+          <button id="backToPortalBtn" class="cn-button cn-button-muted" type="button">Back to matches</button>
           <span class="cn-offline"><i></i><span id="connectionStatus">Ready to score</span></span>
           <button id="newMatchBtn" class="cn-button cn-button-muted" type="button">New match</button>
         </div>
@@ -158,6 +260,8 @@
                 <label>Current bowler<input id="activeBowler" type="text" maxlength="28" list="bowlerOptions" /><datalist id="bowlerOptions"></datalist></label>
               </div>
               <button id="endInningsBtn" class="cn-button cn-button-muted cn-full-button" type="button">End innings</button>
+              <button id="startScheduledMatchBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Start live scoring</button>
+              <p id="viewerNotice" class="cn-viewer-notice" hidden>Live read-only view · only the assigned scorer can add deliveries.</p>
               <div id="followOnOptions" class="cn-follow-on" hidden>
                 <p id="followOnCopy">Follow-on is available.</p>
                 <button id="followOnBtn" class="cn-button cn-button-primary" type="button">Enforce follow-on</button>
@@ -193,6 +297,10 @@
       </form>
     </dialog>
     <div id="toast" class="cn-toast" role="status" aria-live="polite"></div>
-    <script src="app.js?v=cricnova4"></script>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=cricnova7"></script>
+    <script src="portal.js?v=cricnova7"></script>
+    <script src="app.js?v=cricnova7"></script>
   </body>
 </html>
