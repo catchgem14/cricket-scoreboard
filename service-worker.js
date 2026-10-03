@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cricket-scoreboard-v2';
+const CACHE_NAME = 'cricnova-v4';
 const APP_FILES = [
   './',
   './index.html',

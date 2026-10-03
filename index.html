@@ -3,130 +3,196 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cricket Scoreboard</title>
-    <meta
-      name="description"
-      content="Simple cricket scoring app for matches, local score tracking, and quick match updates."
-    />
-    <meta name="theme-color" content="#0d3652" />
+    <meta name="theme-color" content="#07323c" />
+    <meta name="description" content="CricNova is a multi-format cricket scoring desk for Test, ODI and T20 matches." />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <title>CricNova | International Score Centre</title>
   </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div class="brand-block">
-          <div class="brand-mark" aria-label="Cricket scoreboard logo">C</div>
-          <div>
-            <p class="eyebrow">Live Match</p>
-            <h1>Cricket Scoreboard</h1>
-          </div>
+  <body class="cn-body">
+    <div class="cn-shell">
+      <header class="cn-topbar">
+        <a class="cn-brand" href="./" aria-label="CricNova home">
+          <span class="cn-brand-mark">CN</span>
+          <span><strong>CricNova</strong><small>INTERNATIONAL SCORE CENTRE</small></span>
+        </a>
+        <div class="cn-top-actions">
+          <span class="cn-offline"><i></i><span id="connectionStatus">Ready to score</span></span>
+          <button id="newMatchBtn" class="cn-button cn-button-muted" type="button">New match</button>
         </div>
-        <button id="resetBtn" class="outline-btn" type="button">Reset</button>
       </header>
 
-      <div class="hero-banner" aria-label="Match banner">
-        <div>
-          <span class="badge">Professional scoring</span>
-          <h2>Match Center</h2>
+      <main>
+        <section class="cn-page-heading">
+          <div>
+            <p class="cn-kicker">CRICKET, SCORED CLEARLY</p>
+            <h1>Match centre</h1>
+          </div>
+          <p class="cn-rules-note">ICC playing conditions profile <span>2019–20</span></p>
+        </section>
+
+        <div class="cn-workspace">
+          <div class="cn-main-column">
+            <section class="cn-scoreboard" aria-label="Live match score">
+              <div class="cn-scoreboard-top">
+                <div>
+                  <span id="formatBadge" class="cn-format-badge">T20I</span>
+                  <p id="inningsLabel" class="cn-innings-label">Set up a match to begin</p>
+                </div>
+                <span id="matchStatus" class="cn-status"><i></i> SETUP</span>
+              </div>
+              <div class="cn-score-teams">
+                <div><span class="cn-team-caption">BATTING</span><h2 id="battingTeamName">Batting side</h2></div>
+                <span class="cn-versus">v</span>
+                <div class="cn-team-right"><span class="cn-team-caption">BOWLING</span><h2 id="bowlingTeamName">Fielding side</h2></div>
+              </div>
+              <div class="cn-scoreline">
+                <div class="cn-total"><strong id="runsValue">0</strong><span>/ <b id="wicketsValue">0</b></span></div>
+                <div class="cn-over-readout"><strong id="oversValue">0.0</strong><span>OVERS</span></div>
+                <div class="cn-rate-readout"><strong id="runRateValue">0.00</strong><span>RUN RATE</span></div>
+              </div>
+              <div class="cn-target-line" id="targetLine"><span id="targetLabel">FIRST INNINGS</span><strong id="targetValue">No target</strong><span id="requiredValue"></span></div>
+              <div class="cn-over-section">
+                <div class="cn-section-heading"><h3>Current over</h3><span id="overStatus">Waiting for first ball</span></div>
+                <div id="overBalls" class="cn-over-balls" aria-live="polite"><span class="cn-ball-empty">—</span></div>
+              </div>
+              <div id="resultBanner" class="cn-result" hidden></div>
+            </section>
+
+            <section id="scoringPanel" class="cn-panel cn-scoring-panel" hidden>
+              <div class="cn-panel-heading">
+                <div><p class="cn-kicker">LIVE SCORING</p><h2>Record delivery</h2></div>
+                <button id="detailsBtn" class="cn-text-button" type="button">Detailed entry</button>
+              </div>
+              <div class="cn-scoring-group">
+                <span class="cn-control-label">BAT RUNS</span>
+                <div class="cn-run-buttons" aria-label="Add runs off the bat">
+                  <button class="cn-run-button" data-runs="0" type="button">0</button>
+                  <button class="cn-run-button" data-runs="1" type="button">1</button>
+                  <button class="cn-run-button" data-runs="2" type="button">2</button>
+                  <button class="cn-run-button" data-runs="3" type="button">3</button>
+                  <button class="cn-run-button cn-boundary" data-runs="4" type="button">4</button>
+                  <button class="cn-run-button cn-boundary" data-runs="6" type="button">6</button>
+                </div>
+              </div>
+              <div class="cn-scoring-group">
+                <span class="cn-control-label">EXTRAS & DISMISSAL</span>
+                <div class="cn-extra-buttons">
+                  <button class="cn-extra-button" data-extra="wide" type="button"><b>WD</b><span>Wide</span></button>
+                  <button class="cn-extra-button" data-extra="noBall" type="button"><b>NB</b><span>No ball</span></button>
+                  <button class="cn-extra-button" data-extra="bye" type="button"><b>B</b><span>Bye</span></button>
+                  <button class="cn-extra-button" data-extra="legBye" type="button"><b>LB</b><span>Leg bye</span></button>
+                  <button id="wicketBtn" class="cn-extra-button cn-wicket-button" type="button"><b>W</b><span>Wicket</span></button>
+                </div>
+              </div>
+              <div class="cn-score-actions">
+                <span id="freeHitNotice" class="cn-free-hit" hidden>FREE HIT</span>
+                <button id="undoBtn" class="cn-button cn-button-muted" type="button">Undo last delivery</button>
+              </div>
+              <p id="actionMessage" class="cn-action-message" aria-live="polite"></p>
+            </section>
+
+            <div class="cn-player-grid">
+              <section class="cn-panel">
+                <div class="cn-panel-heading"><div><p class="cn-kicker">BATTING CARD</p><h2>At the crease</h2></div><span id="battingExtras" class="cn-table-note">Extras 0</span></div>
+                <div class="cn-table-wrap">
+                  <table class="cn-table">
+                    <thead><tr><th>BATTER</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>SR</th></tr></thead>
+                    <tbody id="battingRows"><tr><td colspan="6" class="cn-empty-cell">Player figures appear when a match starts.</td></tr></tbody>
+                  </table>
+                </div>
+                <div class="cn-fall-wickets"><span>FALL OF WICKETS</span><p id="fallOfWickets">—</p></div>
+              </section>
+              <section class="cn-panel">
+                <div class="cn-panel-heading"><div><p class="cn-kicker">BOWLING CARD</p><h2>Bowling figures</h2></div><span id="bowlerQuota" class="cn-table-note">Limit —</span></div>
+                <div class="cn-table-wrap">
+                  <table class="cn-table cn-bowling-table">
+                    <thead><tr><th>BOWLER</th><th>O</th><th>M</th><th>R</th><th>W</th><th>ECON</th></tr></thead>
+                    <tbody id="bowlingRows"><tr><td colspan="6" class="cn-empty-cell">Bowler figures appear when a match starts.</td></tr></tbody>
+                  </table>
+                </div>
+                <div class="cn-fall-wickets"><span>INNINGS EXTRAS</span><p id="extrasBreakdown">NB 0 · WD 0 · B 0 · LB 0</p></div>
+              </section>
+            </div>
+
+            <section class="cn-panel cn-commentary-panel">
+              <div class="cn-panel-heading"><div><p class="cn-kicker">DELIVERY LOG</p><h2>Commentary</h2></div><span id="deliveryCount" class="cn-table-note">0 deliveries</span></div>
+              <ol id="commentaryList" class="cn-commentary" aria-live="polite"><li class="cn-empty-cell">Ball-by-ball entries will appear here.</li></ol>
+            </section>
+          </div>
+
+          <aside class="cn-side-column">
+            <section id="setupPanel" class="cn-panel cn-setup-panel">
+              <div class="cn-panel-heading"><div><p class="cn-kicker">MATCH SETUP</p><h2>Start a match</h2></div></div>
+              <form id="setupForm" class="cn-form">
+                <label>Format
+                  <select id="formatInput">
+                    <option value="t20">T20 International · 20 overs</option>
+                    <option value="odi">One Day International · 50 overs</option>
+                    <option value="test">Test · up to 5 days</option>
+                  </select>
+                </label>
+                <div id="oversField"><label>Innings overs<input id="oversInput" type="number" min="1" max="50" value="20" /></label></div>
+                <label>Team A<input id="teamAInput" type="text" maxlength="28" value="Team A" required /></label>
+                <label>Team B<input id="teamBInput" type="text" maxlength="28" value="Team B" required /></label>
+                <div class="cn-form-pair">
+                  <label>Toss won by<select id="tossWinnerInput"><option value="0">Team A</option><option value="1">Team B</option></select></label>
+                  <label>Decision<select id="tossDecisionInput"><option value="bat">Bat</option><option value="field">Field</option></select></label>
+                </div>
+                <div class="cn-form-pair">
+                  <label>Opening striker<input id="openerInput" type="text" maxlength="28" value="Batter 1" /></label>
+                  <label>Non-striker<input id="nonStrikerInput" type="text" maxlength="28" value="Batter 2" /></label>
+                </div>
+                <label>Opening bowler<input id="bowlerInput" type="text" maxlength="28" value="Bowler 1" /></label>
+                <button class="cn-button cn-button-primary" type="submit">Start match <span aria-hidden="true">→</span></button>
+              </form>
+            </section>
+
+            <section id="inPlayPanel" class="cn-panel cn-inplay-panel" hidden>
+              <div class="cn-panel-heading"><div><p class="cn-kicker">IN PLAY</p><h2>Match controls</h2></div></div>
+              <div class="cn-match-facts"><div><span>FORMAT</span><strong id="matchFormatFact">—</strong></div><div><span>INNINGS</span><strong id="inningsFact">—</strong></div><div><span>PHASE</span><strong id="phaseFact">—</strong></div><div><span>BOWLER QUOTA</span><strong id="quotaFact">—</strong></div></div>
+              <div class="cn-active-players">
+                <label>Striker<input id="activeStriker" type="text" maxlength="28" /></label>
+                <label>Non-striker<input id="activeNonStriker" type="text" maxlength="28" /></label>
+                <label>Current bowler<input id="activeBowler" type="text" maxlength="28" list="bowlerOptions" /><datalist id="bowlerOptions"></datalist></label>
+              </div>
+              <button id="endInningsBtn" class="cn-button cn-button-muted cn-full-button" type="button">End innings</button>
+              <div id="followOnOptions" class="cn-follow-on" hidden>
+                <p id="followOnCopy">Follow-on is available.</p>
+                <button id="followOnBtn" class="cn-button cn-button-primary" type="button">Enforce follow-on</button>
+              </div>
+              <button id="continueBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Continue to next innings</button>
+              <button id="drawBtn" class="cn-text-button cn-full-button" type="button">End match as a draw</button>
+              <button id="superOverBtn" class="cn-button cn-button-primary cn-full-button" type="button" hidden>Start super over</button>
+              <button id="resetBtn" class="cn-reset-button" type="button">Reset match</button>
+            </section>
+
+            <section class="cn-panel cn-innings-panel">
+              <div class="cn-panel-heading"><div><p class="cn-kicker">MATCH PROGRESS</p><h2>Innings</h2></div></div>
+              <ol id="inningsList" class="cn-innings-list"><li>Match innings will show here.</li></ol>
+            </section>
+
+            <p class="cn-disclaimer">Scoring profile based on the ICC Playing Conditions handbook supplied (2019–20). Match officials and competition-specific conditions take precedence.</p>
+          </aside>
         </div>
-        <div class="banner-status">
-          <span class="status-dot"></span>
-          <span>Live Updates</span>
-        </div>
-      </div>
-
-      <main class="dashboard">
-        <section class="panel config-panel">
-          <h2>Match Setup</h2>
-          <div class="field-grid">
-            <label>
-              Batting Team
-              <input id="battingTeamInput" type="text" value="Team A" maxlength="24" />
-            </label>
-            <label>
-              Bowling Team
-              <input id="bowlingTeamInput" type="text" value="Team B" maxlength="24" />
-            </label>
-            <label>
-              Overs
-              <input id="oversInput" type="number" min="1" max="50" value="20" />
-            </label>
-          </div>
-          <button id="applySetupBtn" class="primary-btn" type="button">Apply setup</button>
-        </section>
-
-        <section class="panel score-panel">
-          <div class="teams-row">
-            <div>
-              <span class="label">Batting</span>
-              <h2 id="battingTeamName">Team A</h2>
-            </div>
-            <div class="versus">vs</div>
-            <div>
-              <span class="label">Bowling</span>
-              <h2 id="bowlingTeamName">Team B</h2>
-            </div>
-          </div>
-
-          <div class="score-grid">
-            <div class="score-card runs-card">
-              <span class="card-label">Runs</span>
-              <strong id="runsValue">0</strong>
-            </div>
-            <div class="score-card">
-              <span class="card-label">Wickets</span>
-              <strong id="wicketsValue">0</strong>
-            </div>
-            <div class="score-card">
-              <span class="card-label">Overs</span>
-              <strong id="oversValue">0.0</strong>
-            </div>
-            <div class="score-card">
-              <span class="card-label">Run Rate</span>
-              <strong id="runRateValue">0.00</strong>
-            </div>
-          </div>
-
-          <div class="summary-row">
-            <div class="summary-box">
-              <span>Target</span>
-              <strong id="targetValue">-</strong>
-            </div>
-            <div class="summary-box">
-              <span>Need</span>
-              <strong id="requiredValue">-</strong>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel controls-panel">
-          <h2>Score update</h2>
-          <div class="button-grid">
-            <button class="score-btn" data-runs="0" type="button">0</button>
-            <button class="score-btn" data-runs="1" type="button">1</button>
-            <button class="score-btn" data-runs="2" type="button">2</button>
-            <button class="score-btn" data-runs="3" type="button">3</button>
-            <button class="score-btn" data-runs="4" type="button">4</button>
-            <button class="score-btn" data-runs="6" type="button">6</button>
-            <button class="score-btn wide-btn" data-type="wide" type="button">Wide</button>
-            <button class="score-btn no-ball-btn" data-type="noball" type="button">No Ball</button>
-            <button class="score-btn wicket-btn" data-type="wicket" type="button">Wicket</button>
-          </div>
-
-          <div class="utility-row">
-            <button id="undoBtn" class="outline-btn" type="button">Undo</button>
-          </div>
-        </section>
-
-        <section class="panel log-panel">
-          <h2>Ball-by-ball</h2>
-          <ul id="ballLog" class="ball-log" aria-live="polite"></ul>
-        </section>
       </main>
+      <footer class="cn-footer"><span>CRICNOVA</span><span>Score with clarity.</span></footer>
     </div>
 
+    <dialog id="deliveryDialog" class="cn-dialog">
+      <form id="deliveryForm" method="dialog">
+        <div class="cn-dialog-heading"><div><p class="cn-kicker">SCORER ENTRY</p><h2>Detailed delivery</h2></div><button class="cn-close-button" type="button" data-close-dialog aria-label="Close">×</button></div>
+        <div class="cn-form-pair"><label>Runs off bat<input id="detailBatRuns" type="number" min="0" max="6" value="0" /></label><label>Wide runs completed<input id="detailWideRuns" type="number" min="0" max="6" value="0" /></label></div>
+        <div class="cn-check-row"><label><input id="detailNoBall" type="checkbox" /> No-ball (adds 1 penalty)</label><label><input id="detailWide" type="checkbox" /> Wide (adds 1 penalty)</label></div>
+        <div class="cn-form-pair"><label>Byes<input id="detailByes" type="number" min="0" max="6" value="0" /></label><label>Leg-byes<input id="detailLegByes" type="number" min="0" max="6" value="0" /></label></div>
+        <div class="cn-form-pair"><label>Penalty runs<input id="detailPenalty" type="number" min="0" max="10" value="0" /></label><label>Dismissal<select id="detailWicket"><option value="">No wicket</option><option value="bowled">Bowled</option><option value="caught">Caught</option><option value="lbw">LBW</option><option value="runOut">Run out</option><option value="stumped">Stumped</option><option value="hitWicket">Hit wicket</option><option value="hitBallTwice">Hit the ball twice</option><option value="obstructing">Obstructing the field</option></select></label></div>
+        <div id="dismissalFields" class="cn-form-pair" hidden><label>Dismissed batter<select id="detailDismissed"><option value="striker">Striker</option><option value="nonStriker">Non-striker</option></select></label><label>Incoming batter<input id="incomingBatter" type="text" maxlength="28" /></label></div>
+        <p id="dialogMessage" class="cn-action-message" aria-live="polite"></p>
+        <div class="cn-dialog-actions"><button class="cn-button cn-button-muted" type="button" data-close-dialog>Cancel</button><button id="saveDeliveryBtn" class="cn-button cn-button-primary" type="button">Add to scorecard</button></div>
+      </form>
+    </dialog>
+    <div id="toast" class="cn-toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
 </html>

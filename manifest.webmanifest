@@ -1,12 +1,12 @@
 {
-  "name": "Cricket Scoreboard",
-  "short_name": "Scoreboard",
-  "description": "A simple, installable cricket match scoreboard.",
+  "name": "CricNova",
+  "short_name": "CricNova",
+  "description": "CricNova is an international cricket score centre for Test, ODI and T20 matches.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f3f6f8",
-  "theme_color": "#0d3652",
+  "background_color": "#eef7f7",
+  "theme_color": "#07323c",
   "icons": [
     {
       "src": "icon-192.png",

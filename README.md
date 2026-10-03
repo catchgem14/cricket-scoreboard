@@ -1,15 +1,18 @@
-# Cricket Scoreboard
+# CricNova
 
-A lightweight cricket scoring app built with plain HTML, CSS, and JavaScript so it can be hosted on GitHub Pages with no build step.
+CricNova is a responsive, installable cricket scorer built with plain HTML, CSS, and JavaScript. It runs on GitHub Pages without a build step.
 
 ## Features
 
-- Simple score tracking for runs, wickets, and overs
-- Quick action buttons for 0, 1, 2, 3, 4, 6, wide, no ball, and wicket
-- Undo and reset controls
-- Responsive layout for desktop, laptop, tablet, and mobile
-- Stores match state locally in the browser
-- Can be installed on Android from Chrome and runs offline after its first visit
+- Test, One Day International, and T20 International match setup
+- Innings progression, targets, Test declarations, follow-on eligibility, and limited-overs tie handling
+- Ball-by-ball scoring, batter and bowler figures, extras, fall of wickets, and over summaries
+- Legal-ball tracking, bowler quotas, free hits after no-balls, undo, and local match persistence
+- Responsive score centre for desktop, tablet, and mobile; Android install and offline launch support
+
+## Rules profile
+
+Scoring follows the relevant innings, over, runs, no-ball, wide, bye, and leg-bye conditions from the supplied ICC Playing Conditions Handbook 2019–20. This is a scoring aid, not an official ICC product. Competition-specific revisions, DLS calculations, umpire decisions, and non-scoring regulations are not automated.
 
 ## Local run
 
@@ -37,4 +40,4 @@ After the site is published over HTTPS, open it in Chrome on Android, open the b
 
 ## Notes
 
-This is intentionally lightweight to keep the app simple and fast to load on mobile devices and shared public links.
+Match data is stored in the current browser on the current device. This static version does not synchronize scorecards between devices.
